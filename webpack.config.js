@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/main.js',
   output: {
     filename: 'bundle.[contenthash].js',
-    output: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'build'),
     clean: true,
   },
   devtool: 'source-map',
