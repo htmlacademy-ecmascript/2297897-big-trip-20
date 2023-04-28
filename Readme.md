@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Никита Зимин](https://up.htmlacademy.ru/ecmascript/20/user/2297897).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Бабченко](https://htmlacademy.ru/profile/babtshe).
 
 ---
 
