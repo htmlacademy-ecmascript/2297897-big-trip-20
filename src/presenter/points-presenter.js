@@ -4,6 +4,7 @@ import PointView from '../view/point-view.js';
 import SortView from '../view/sort-view.js';
 import { render } from '../render.js';
 
+const TASK_POINTS = 3;
 export default class PointsPresenter {
   sortComponent = new SortView();
   listComponent = new ListView();
@@ -18,7 +19,7 @@ export default class PointsPresenter {
 
     render(new EditPointView(), this.listComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < TASK_POINTS; i++) {
       render(new PointView(), this.listComponent.getElement());
     }
   }
