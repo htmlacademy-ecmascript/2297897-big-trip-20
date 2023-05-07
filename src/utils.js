@@ -14,4 +14,5 @@ const generateNumber = (min, max) => {
 
 const buildPhotos = () => Array.from({length: AMOUNT_OF_PHOTOS}, () => `https://loremflickr.com/248/152?random=${generateNumber(1, 20)}`);
 
+
 export { getRandomArrayElement, generateNumber, buildPhotos };

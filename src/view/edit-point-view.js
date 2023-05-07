@@ -1,9 +1,10 @@
 import { createElement } from '../render.js';
 import { getRandomArrayElement } from '../utils.js';
+import dayjs from 'dayjs';
 
 function createEditPointTemplate(point) {
   const currentPoint = getRandomArrayElement(point);
-  const {description, photos, type, name} = currentPoint ;
+  const {description, photos, type, name, dateFrom, dateTo} = currentPoint ;
   const {offerName, offerPrices} = currentPoint.offers;
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -81,10 +82,10 @@ function createEditPointTemplate(point) {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
       </div>
 
       <div class="event__field-group  event__field-group--price">

@@ -26,6 +26,8 @@ const generatePoint = () => {
     cityName: getRandomArrayElement(CITIES),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
     photos: buildPhotos(),
+    dateFrom: new Date('2023-05-07 18:30'),
+    dateTo: new Date('2023-05-08 8:00'),
     offers: {
       offerName: 'Test offer',
       offerPrices: Array.from({length: OFFERS_COUNT}, () => generateNumber(MIN_OFFER_PRICE, MAX_OFFER_PRICE)),
