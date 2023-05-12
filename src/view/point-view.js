@@ -1,9 +1,9 @@
-import { createElement } from '../render.js';
 import { getRandomArrayElement } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createPointTemplate(point) {
-  const {type, cityName, name } = point;
-  const {offerName, offerPrices} = point.offers;
+  const {type, cityName, typeName } = point;
+  const {offers:{offerName, offerPrices}} = point;
   const currentOfferPrice = getRandomArrayElement(offerPrices);
   return `<li class="trip-events__item">
   <div class="event">
@@ -11,7 +11,7 @@ function createPointTemplate(point) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${name} ${cityName}</h3>
+    <h3 class="event__title">${typeName} ${cityName}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -44,23 +44,13 @@ function createPointTemplate(point) {
 </li>`;
 }
 
-export default class PointView {
+export default class PointView extends AbstractView{
   constructor({point}){
+    super();
     this.point = point;
   }
 
-  getTemplate(){
+  get template(){
     return createPointTemplate(this.point);
-  }
-
-  getElement(){
-    if(!this.element){
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement(){
-    this.element = null;
   }
 }

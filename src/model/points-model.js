@@ -5,7 +5,7 @@ const AMOUNT_OF_POINTS = 5;
 export default class PointsModel {
   points = Array.from({length: AMOUNT_OF_POINTS}, generatePoint);
 
-  getPoint(){
+  get point(){
     return this.points;
   }
 }
