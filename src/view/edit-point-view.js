@@ -1,11 +1,11 @@
-import { getRandomArrayElement } from '../utils.js';
 import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
 
 function createEditPointTemplate(point) {
-  const currentPoint = getRandomArrayElement(point);
-  const {description, photos, type, typeName, dateFrom, dateTo} = currentPoint ;
+  const currentPoint = point;
+  const {description, photos, type, typeName, dateFrom, dateTo, cityName} = currentPoint;
   const {offerName, offerPrices} = currentPoint.offers;
+
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -72,7 +72,7 @@ function createEditPointTemplate(point) {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${typeName}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" typeName="event-destination" value="Chamonix" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" typeName="event-destination" value="${cityName}" list="destination-list-1">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -114,42 +114,6 @@ function createEditPointTemplate(point) {
               <span class="event__offer-price">${offerPrices[0]}</span>
             </label>
           </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" typeName="event-offer-comfort" checked>
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">${offerName} ${typeName}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offerPrices[1]}</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" typeName="event-offer-meal">
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">${offerName} ${typeName}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offerPrices[2]}</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" typeName="event-offer-seats">
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">${offerName} ${typeName}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offerPrices[3]}</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" typeName="event-offer-train">
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">${offerName} ${typeName}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offerPrices[4]}</span>
-            </label>
-          </div>
         </div>
       </section>
       <section class="event__details">
@@ -169,13 +133,32 @@ function createEditPointTemplate(point) {
 }
 
 export default class EditPointView extends AbstractView {
-  constructor({point}){
+  #point;
+  #handlerFormSubmit;
+  #handlerRollupClick;
+  constructor({point, onFormSubmit, onRollupClick}){
     super();
-    this.point = point;
+    this.#point = point;
+    this.#handlerFormSubmit = onFormSubmit;
+    this.#handlerRollupClick = onRollupClick;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#rollupClickHandler);
   }
 
   get template() {
-    return createEditPointTemplate(this.point);
+    return createEditPointTemplate(this.#point);
   }
 
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handlerFormSubmit();
+  };
+
+  #rollupClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handlerRollupClick();
+  };
 }
