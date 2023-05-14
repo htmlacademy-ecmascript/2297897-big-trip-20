@@ -7,6 +7,7 @@ import { render, RenderPosition } from './framework/render.js';
 const tripMainElement = document.querySelector('.trip-main');
 const filtersControlsElement = document.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
+
 const pointsModel = new PointsModel();
 const pointsPresenter = new PointsPresenter({
   bodyContainer: tripEventsContainer,

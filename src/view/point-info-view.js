@@ -14,7 +14,7 @@ function createPointInfoTemplate() {
   </section>`;
 }
 
-export default class PointInfoView extends AbstractView{
+export default class PointInfoView extends AbstractView {
   get template() {
     return createPointInfoTemplate();
   }

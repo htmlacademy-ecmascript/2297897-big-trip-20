@@ -17,7 +17,7 @@ export default class PointsPresenter {
   }
 
   init() {
-    this.#pointsContainer = [...this.#pointsModel.point];
+    this.#pointsContainer = [...this.#pointsModel.points];
     this.#renderBoard();
   }
 
@@ -65,8 +65,6 @@ export default class PointsPresenter {
     render(this.#sortComponent, this.#bodyContainer);
     render(this.#listComponent, this.#bodyContainer);
 
-    for (let i = 0; i < this.#pointsContainer.length; i++) {
-      this.#renderPoint(this.#pointsContainer[i]);
-    }
+    this.#pointsContainer.forEach((point) => this.#renderPoint(point));
   }
 }
