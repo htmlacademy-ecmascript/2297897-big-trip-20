@@ -1,17 +1,18 @@
-import { createElement } from '../render.js';
 import { getRandomArrayElement } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createPointTemplate(point) {
-  const {type, cityName, name } = point;
-  const {offerName, offerPrices} = point.offers;
+  const { eventType, cityName, eventTypeName } = point;
+  const { offers: { offerName, offerPrices } } = point;
   const currentOfferPrice = getRandomArrayElement(offerPrices);
+
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="2019-03-18">MAR 18</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${name} ${cityName}</h3>
+    <h3 class="event__title">${eventTypeName} ${cityName}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -44,23 +45,25 @@ function createPointTemplate(point) {
 </li>`;
 }
 
-export default class PointView {
-  constructor({point}){
-    this.point = point;
+export default class PointView extends AbstractView {
+  #point;
+  #handleEditClick;
+
+  constructor({ point, onEditClick }) {
+    super();
+    this.#point = point;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate(){
-    return createPointTemplate(this.point);
+  get template() {
+    return createPointTemplate(this.#point);
   }
 
-  getElement(){
-    if(!this.element){
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement(){
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
