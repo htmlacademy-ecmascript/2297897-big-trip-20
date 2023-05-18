@@ -1,5 +1,5 @@
 import FiltersView from './view/filters-view.js';
-import PointsPresenter from './presenter/points-presenter.js';
+import PointsPresenter from './presenter/app-presenter.js';
 import PointInfoView from './view/point-info-view.js';
 import PointsModel from './model/points-model.js';
 import { render, RenderPosition } from './framework/render.js';
