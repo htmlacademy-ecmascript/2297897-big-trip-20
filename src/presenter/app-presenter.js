@@ -6,9 +6,9 @@ import PointPresenter from './point-presenter.js';
 export default class PointsPresenter {
   #sortComponent = new SortView();
   #listComponent = new ListView();
-  #bodyContainer;
-  #pointsModel;
-  #pointsContainer;
+  #bodyContainer = null;
+  #pointsModel = null;
+  #pointsContainer = null;
 
   constructor({ bodyContainer, pointsModel }) {
     this.#bodyContainer = bodyContainer;

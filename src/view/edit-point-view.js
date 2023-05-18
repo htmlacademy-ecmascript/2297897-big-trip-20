@@ -133,9 +133,9 @@ function createEditPointTemplate(point) {
 }
 
 export default class EditPointView extends AbstractView {
-  #point;
-  #handlerFormSubmit;
-  #handlerRollupClick;
+  #point = null;
+  #handlerFormSubmit = null;
+  #handlerRollupClick = null;
 
   constructor({ point, onFormSubmit, onRollupClick }) {
     super();

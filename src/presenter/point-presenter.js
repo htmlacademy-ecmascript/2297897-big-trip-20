@@ -1,12 +1,11 @@
 import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import { replace, render, remove } from '../framework/render.js';
-
 export default class PointPresenter {
-  #pointsListContainer;
-  #pointComponent;
-  #pointEditComponent;
-  #point;
+  #pointsListContainer = null;
+  #pointComponent = null;
+  #pointEditComponent = null;
+  #point = null;
 
   constructor({ pointsListContainer }) {
     this.#pointsListContainer = pointsListContainer;
