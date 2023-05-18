@@ -20,22 +20,13 @@ export default class PointPresenter {
 
     this.#pointComponent = new PointView({
       point: this.#point,
-      onEditClick: () => {
-        this.#replacePointToForm();
-        document.addEventListener('keydown', this.#escKeyDownHandler);
-      }
+      onEditClick: this.#editClickHandler
     });
 
     this.#pointEditComponent = new EditPointView({
       point: this.#point,
-      onFormSubmit: () => {
-        this.#replaceFormToPoint();
-        document.removeEventListener('keydown', this.#escKeyDownHandler);
-      },
-      onRollupClick: () => {
-        this.#replaceFormToPoint();
-        document.removeEventListener('keydown', this.#escKeyDownHandler);
-      }
+      onFormSubmit: this.#formSubmitHandler,
+      onRollupClick: this.#rollupClickHandler
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -43,7 +34,6 @@ export default class PointPresenter {
       return;
     }
 
-    //Чтобы не заменять то, что не было отрисовано
     if (this.#pointsListContainer.contains(prevPointComponent.element)) {
       replace(this.#pointComponent, prevPointComponent);
     }
@@ -69,8 +59,23 @@ export default class PointPresenter {
     }
   };
 
+  #editClickHandler = () => {
+    this.#replacePointToForm();
+  };
+
+  #formSubmitHandler = () => {
+    this.#replaceFormToPoint();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #rollupClickHandler = () => {
+    this.#replaceFormToPoint();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
   #replacePointToForm() {
     replace(this.#pointEditComponent, this.#pointComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
   #replaceFormToPoint() {
