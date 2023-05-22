@@ -30,6 +30,7 @@ const generatePoint = () => {
     photos: buildPhotos(),
     dateFrom: new Date('2023-05-07 18:30'),
     dateTo: new Date('2023-05-08 8:00'),
+    isFavorite: true,
     offers: {
       offerName: 'Test offer',
       offerPrices: Array.from({length: OFFERS_COUNT}, () => generateNumber(MIN_OFFER_PRICE, MAX_OFFER_PRICE)),
