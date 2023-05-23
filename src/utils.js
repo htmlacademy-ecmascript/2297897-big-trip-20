@@ -12,7 +12,10 @@ const generateNumber = (min, max) => {
   return number;
 };
 
-const buildPhotos = () => Array.from({length: AMOUNT_OF_PHOTOS}, () => `https://loremflickr.com/248/152?random=${generateNumber(1, 20)}`);
+const buildPhotos = () => Array.from({ length: AMOUNT_OF_PHOTOS }, () => `https://loremflickr.com/248/152?random=${generateNumber(1, 20)}`);
 
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
 
-export { getRandomArrayElement, generateNumber, buildPhotos };
+export { getRandomArrayElement, generateNumber, buildPhotos, updateItem };
