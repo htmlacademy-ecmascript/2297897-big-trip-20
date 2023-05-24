@@ -80,13 +80,13 @@ export default class PointsPresenter {
   };
 
   #renderPoint(point) {
-    const pointPresenter = new PointPresenter({
+    const pointComponentPresenter = new PointPresenter({
       pointsListContainer: this.#listComponent.element,
       onDataChange: this.#handlePointChange,
-      onModeChange: this.#handleModeChange
+      onModeChange: this.#handleModeChange,
+      point: point
     });
-    pointPresenter.init(point);
-    this.#pointPresenters.set(point.id, pointPresenter);
+    this.#pointPresenters.set(point.id, pointComponentPresenter);
   }
 
   #renderBoard() {

@@ -18,10 +18,12 @@ export default class PointPresenter {
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ pointsListContainer, onDataChange, onModeChange }) {
+  constructor({ pointsListContainer, onDataChange, onModeChange, point }) {
     this.#pointsListContainer = pointsListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#point = point;
+    this.init(this.#point);
   }
 
   init(point) {
