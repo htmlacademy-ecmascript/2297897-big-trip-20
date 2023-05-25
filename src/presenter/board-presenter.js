@@ -92,6 +92,6 @@ export default class PointsPresenter {
   #renderBoard() {
     render(this.#listComponent, this.#bodyContainer);
     this.#renderSort();
-    this.#tripEvents.forEach((point) => this.#renderPoint(point));
+    this.#renderPointList();
   }
 }
