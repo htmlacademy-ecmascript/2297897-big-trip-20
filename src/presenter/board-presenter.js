@@ -1,5 +1,5 @@
 import ListView from '../view/list-view.js';
-import SortView, {SortType} from '../view/sort-view.js';
+import SortView, { SortType } from '../view/sort-view.js';
 import { RenderPosition, render } from '../framework/render.js';
 import { updateItem, sortDay, sortTime, sortPrice } from '../utils.js';
 import PointPresenter from './point-presenter.js';
@@ -48,7 +48,7 @@ export default class PointsPresenter {
   }
 
   #handleSortTypeChange = (sortType) => {
-    if(this.#currentSortType === sortType){
+    if (this.#currentSortType === sortType) {
       return;
     }
 
@@ -62,7 +62,7 @@ export default class PointsPresenter {
     this.#pointPresenters.clear();
   }
 
-  #renderPointList(){
+  #renderPointList() {
     this.#tripEvents.forEach((point) => this.#renderPoint(point));
   }
 

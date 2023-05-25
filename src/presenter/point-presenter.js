@@ -50,11 +50,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#mode === Mode.DEFAULT){
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if(this.#mode === Mode.EDITING){
+    if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
@@ -67,8 +67,8 @@ export default class PointPresenter {
     remove(this.#pointEditComponent);
   }
 
-  resetView(){
-    if(this.#mode !== Mode.DEFAULT){
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToPoint();
     }
   }
@@ -81,8 +81,8 @@ export default class PointPresenter {
     }
   };
 
-  #favoriteClickHandler = () =>{
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  #favoriteClickHandler = () => {
+    this.#handleDataChange({ ...this.#point, isFavorite: !this.#point.isFavorite });
   };
 
   #editClickHandler = () => {
