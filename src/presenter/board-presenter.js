@@ -23,6 +23,7 @@ export default class PointsPresenter {
   init() {
     this.#tripEvents = [...this.#pointsModel.points];
     this.#sourcedTripEvents = [...this.#pointsModel.points];
+    this.#sortPoints(this.#currentSortType);
     this.#renderBoard();
   }
 

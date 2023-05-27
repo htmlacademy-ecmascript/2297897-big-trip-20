@@ -3,8 +3,8 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 function createEditPointTemplate(point) {
   const currentPoint = point;
-  const { description, photos, eventType, eventTypeName, dateFrom, dateTo, cityName } = currentPoint;
-  const { offerName, offerPrices } = currentPoint.offers;
+  const { description, photos, eventType, eventTypeName, dateFrom, dateTo, cityName, basePrice } = currentPoint;
+  const { offerName, offerPrice } = currentPoint.offers;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -93,7 +93,7 @@ function createEditPointTemplate(point) {
           <span class="visually-hidden"></span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -111,7 +111,7 @@ function createEditPointTemplate(point) {
             <label class="event__offer-label" for="event-offer-luggage-1">
               <span class="event__offer-title">${offerName} ${eventTypeName}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offerPrices[0]}</span>
+              <span class="event__offer-price">${offerPrice}</span>
             </label>
           </div>
         </div>
