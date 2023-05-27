@@ -18,8 +18,13 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-const sortDay = (pointA, pointB) => Date.now(pointB.timeFrom) - Date.now(pointA.timeFrom);
-const sortTime = (pointA, pointB) => (Date.now(pointB.timeFrom) - Date.now(pointB.timeTo)) - (Date.now(pointA.timeFrom) - Date.now(pointA.timeTo));
-const sortPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+const sortDay = (firstPoint, secondPoint) => {
+  const firstPointDate = firstPoint.dateFrom;
+  const secondPointDate = secondPoint.dateFrom;
+  const result = firstPointDate.valueOf() - secondPointDate.valueOf();
+  return result;
+};
+const sortTime = (pointA, pointB) => pointB.timeDiff - pointA.timeDiff;
+const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
 
 export { getRandomArrayElement, generateNumber, buildPhotos, updateItem, sortDay, sortTime, sortPrice };
