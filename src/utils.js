@@ -1,4 +1,4 @@
-const AMOUNT_OF_PHOTOS = 6;
+import dayjs from 'dayjs';
 
 const getRandomArrayElement = (array) => {
   const randomElement = array[Math.floor(Math.random() * (array.length))];
@@ -12,19 +12,17 @@ const generateNumber = (min, max) => {
   return number;
 };
 
-const buildPhotos = () => Array.from({ length: AMOUNT_OF_PHOTOS }, () => `https://loremflickr.com/248/152?random=${generateNumber(1, 20)}`);
-
 function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
 const sortDay = (firstPoint, secondPoint) => {
-  const firstPointDate = firstPoint.dateFrom;
-  const secondPointDate = secondPoint.dateFrom;
+  const firstPointDate = dayjs(firstPoint.dateFrom);
+  const secondPointDate = dayjs(secondPoint.dateFrom);
   const result = firstPointDate.valueOf() - secondPointDate.valueOf();
   return result;
 };
 const sortTime = (pointA, pointB) => pointB.timeDiff - pointA.timeDiff;
 const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
 
-export { getRandomArrayElement, generateNumber, buildPhotos, updateItem, sortDay, sortTime, sortPrice };
+export { getRandomArrayElement, generateNumber, updateItem, sortDay, sortTime, sortPrice };

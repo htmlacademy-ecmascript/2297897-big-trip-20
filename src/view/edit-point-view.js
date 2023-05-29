@@ -1,10 +1,44 @@
 import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { citiesDatalistElement, citiesInformation, OFFERS } from '../mock/point.js';
+
+const createOffersListTemplate = (point) => OFFERS.map((offer) => {
+  if (offer.suitablePointTypes.includes(point.eventType)) {
+    const checked = point.offers.some((element) => element.type === offer.type) ? 'checked' : '';
+    return `
+    <div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden"
+      id="event-offer-${offer.type}"
+      type="checkbox"
+      name="event-offer-${offer.type}"
+      value="${offer.type}"
+      ${checked}>
+      <label class="event__offer-label" for="event-offer-${offer.type}">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>
+    `;
+  }
+}
+).join('');
+
+const createOffersTemplate = (point) => {
+  const offersListTemplate = createOffersListTemplate(point);
+  return `
+    <section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <div class="event__available-offers">
+        ${offersListTemplate}
+      </div>
+    </section>
+  `;
+};
 
 function createEditPointTemplate(point) {
-  const { description, photos, eventType, eventTypeName, dateFrom, dateTo, cityName, basePrice } = point;
-  const { offerName, offerPrice } = point.offers;
-
+  const { description, photos, eventType, eventTypeLabel, dateFrom, dateTo, cityName, basePrice, availableOffers } = point;
+  const offersTemplate = availableOffers.length !== 0 ? createOffersTemplate(point) : '';
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -69,13 +103,11 @@ function createEditPointTemplate(point) {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${eventTypeName}
+          ${eventTypeLabel}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${cityName}" list="destination-list-1" autocomplete="off">
         <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+          ${citiesDatalistElement}
         </datalist>
       </div>
 
@@ -102,18 +134,7 @@ function createEditPointTemplate(point) {
       </button>
     </header>
     <section class="event__details">
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        <div class="event__available-offers">
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-            <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">${offerName} ${eventTypeName}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offerPrice}</span>
-            </label>
-          </div>
-        </div>
+          ${offersTemplate}
       </section>
       <section class="event__details">
       <section class="event__section  event__section--destination">
@@ -134,17 +155,18 @@ function createEditPointTemplate(point) {
 export default class EditPointView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleRollupClick = null;
-  #handleEventChange = null;
 
-  constructor({ point, onFormSubmit, onRollupClick, onEventDestinationChange }) {
+  constructor({ point, onFormSubmit, onRollupClick }) {
     super();
 
-    this._setState(EditPointView.parsePointToState(point));
+    this._setState(EditPointView.parsePointToState(point), {
+      availableOffers: []
+    });
 
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupClick = onRollupClick;
-    this.#handleEventChange = onEventDestinationChange;
 
+    this.#updateAvailableOffers();
     this._restoreHandlers();
   }
 
@@ -165,6 +187,12 @@ export default class EditPointView extends AbstractStatefulView {
       .addEventListener('click', this.#rollupClickHandler);
     this.element.querySelector('.event__type-group')
       .addEventListener('click', this.#eventTypeClickHandler);
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationChangeHandler);
+    if (this._state.availableOffers.length !== 0) {
+      this.element.querySelector('.event__section--offers')
+        .addEventListener('change', this.#offerChangeHandler);
+    }
   }
 
   #formSubmitHandler = (evt) => {
@@ -172,26 +200,72 @@ export default class EditPointView extends AbstractStatefulView {
     this.#handleFormSubmit(EditPointView.parseStateToPoint(this._state));
   };
 
+  #updateAvailableOffers() {
+    const availableOffers = OFFERS.filter((offer) =>
+      offer.suitablePointTypes.includes(this._state.eventType)
+    );
+    this._setState({ availableOffers });
+
+    return availableOffers;
+  }
+
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleRollupClick();
   };
 
+  #destinationChangeHandler = (evt) => {
+    const newCityName = evt.target.value;
+    if (!citiesInformation.has(newCityName)) {
+      return;
+    }
+    this.updateElement({
+      cityName: newCityName,
+      description: citiesInformation.get(newCityName).description,
+      photos: citiesInformation.get(newCityName).photos
+    });
+  };
+
   #eventTypeClickHandler = (evt) => {
     evt.preventDefault();
-    const newEventType = evt.target.innerHTML;
+    const newEventType = evt.target.innerHTML.toLowerCase();
+    const offers = [];
+    this._setState({ eventType: newEventType });
+    const availableOffers = this.#updateAvailableOffers();
     this.updateElement(
       {
-        eventType: newEventType,
-        eventTypeName: newEventType
+        eventType: newEventType.toLowerCase(),
+        eventTypeLabel: newEventType,
+        offers,
+        availableOffers
       }
     );
   };
 
-  static parsePointToState = (point) => ({...point});
+  #offerChangeHandler = (evt) => {
+    evt.preventDefault();
+    if (!evt.target.classList.contains('event__offer-checkbox') /* !== 'event__offer-checkbox'*/) {
+      return;
+    }
+    const offerType = evt.target.value;
+    const isChecked = evt.target.checked;
+    const offers = this._state.offers;
+    if (isChecked) {
+      offers.push(
+        OFFERS.find((offer) => offer.type === offerType)
+      );
+    } else {
+      const element = offers.find((offer) => offer.type === offerType);
+      const index = offers.indexOf(element);
+      offers.splice(index, 1);
+    }
+    this._setState({ offers });
+  };
 
-  static parseStateToPoint = (state) =>{
-    const point = {...state};
+  static parsePointToState = (point) => ({ ...point });
+
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
     return point;
   };
 }

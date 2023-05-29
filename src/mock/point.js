@@ -1,10 +1,7 @@
 import { nanoid } from 'nanoid';
-import { getRandomArrayElement, generateNumber, buildPhotos } from '../utils.js';
+import { getRandomArrayElement, generateNumber } from '../utils.js';
 import dayjs from 'dayjs';
 import { generateDate } from '../time.js';
-
-const MIN_OFFER_PRICE = 10;
-const MAX_OFFER_PRICE = 100;
 
 const MIN_BASE_PRICE = 1000;
 const MAX_BASE_PRICE = 5000;
@@ -29,21 +26,68 @@ const CITIES = [
   'Geneva'
 ];
 
+const OFFERS = [
+  {
+    type: 'luggage',
+    title: 'Add luggage',
+    price: 30,
+    suitablePointTypes: ['bus', 'train', 'ship', 'drive', 'flight'],
+  },
+  {
+    type: 'comfort',
+    title: 'Comfort class',
+    price: 100,
+    suitablePointTypes: ['train', 'ship', 'flight'],
+  },
+  {
+    type: 'meal',
+    title: 'Add meal',
+    price: 15,
+    suitablePointTypes: ['train', 'ship', 'flight', 'check-in'],
+  },
+  {
+    type: 'seats',
+    title: 'Choose seats',
+    price: 5,
+    suitablePointTypes: ['bus', 'train', 'ship', 'flight'],
+  },
+];
+
+const citiesInformation = new Map(
+  [
+    ['Amsterdam',
+      {
+        photos: 'https://loremflickr.com/248/152?random=1',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+      }
+    ],
+    ['Chaomix',
+      {
+        photos: 'https://loremflickr.com/248/152?random=2',
+        description: 'Cras aliquet varius magna, non porta ligula feugiat eget..'
+      }
+    ],
+    ['Geneva',
+      {
+        photos: 'https://loremflickr.com/248/152?random=3',
+        description: 'Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.'
+      }
+    ]
+  ]
+);
+
+const generateCitiesDatalist = (citiesArray) => citiesArray.map((city) => `<option value="${city}"></option>`).join('');
+const citiesDatalistElement = generateCitiesDatalist(CITIES);
+
 const generatePoint = () => {
   const point = {
     id: nanoid(),
     eventType: getRandomArrayElement(TYPES),
     cityName: getRandomArrayElement(CITIES),
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
     basePrice: generateNumber(MIN_BASE_PRICE, MAX_BASE_PRICE),
-    photos: buildPhotos(),
     dateFrom: generateDate(),
     timeDiff: generateNumber(MIN_DIFF_TIME, MAX_DIFF_TIME),
-    isFavorite: true,
-    offers: {
-      offerName: 'Test offer',
-      offerPrice: generateNumber(MIN_OFFER_PRICE, MAX_OFFER_PRICE),
-    },
+    isFavorite: generateNumber(0, 1),
 
     get typeName() {
       const type = this.eventType;
@@ -57,14 +101,28 @@ const generatePoint = () => {
     },
 
     get totalPrice() {
-      return this.basePrice + this.offers['offerPrice'];
+      return this.basePrice;
+    },
+
+    get cityPhotos() {
+      return citiesInformation.get(this.cityName).photos;
+    },
+
+    get cityDescription() {
+      return citiesInformation.get(this.cityName).description;
     }
   };
 
+  point.offers = OFFERS.filter(
+    (offer) => offer.suitablePointTypes.includes(point.eventType)
+  );
   point.dateTo = point.endDate;
-  point.eventTypeName = point.typeName;
+  point.eventTypeLabel = point.typeName;
   point.finalPrice = point.totalPrice;
+  point.photos = point.cityPhotos;
+  point.description = point.cityDescription;
+
   return point;
 };
 
-export { generatePoint };
+export { generatePoint, citiesDatalistElement, citiesInformation, OFFERS };

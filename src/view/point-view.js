@@ -1,9 +1,22 @@
 import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
 
+const createOffersListTemplate = (point) =>
+  point.offers
+    .map(
+      (offer) => `
+    <li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>
+  `
+    )
+    .join('');
+
 function createPointTemplate(point) {
-  const { eventType, cityName, eventTypeName, isFavorite, dateFrom, dateTo, timeDiff, finalPrice } = point;
-  const { offers: { offerName, offerPrice } } = point;
+  const { eventType, cityName, eventTypeLabel, isFavorite, dateFrom, dateTo, timeDiff, finalPrice } = point;
+  const offersPointTemplate = createOffersListTemplate(point);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -11,7 +24,7 @@ function createPointTemplate(point) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${eventTypeName} ${cityName}</h3>
+    <h3 class="event__title">${eventTypeLabel} ${cityName}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${dayjs(dateFrom).toISOString()}">${dayjs(dateFrom).format('HH:mm')}</time>
@@ -25,11 +38,7 @@ function createPointTemplate(point) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">${offerName} ${eventTypeName}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offerPrice}</span>
-      </li>
+    ${offersPointTemplate}
     </ul>
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
       <span class="visually-hidden">Add to favorite</span>
