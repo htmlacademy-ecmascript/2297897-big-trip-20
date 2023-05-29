@@ -26,7 +26,7 @@ function createPointTemplate(point) {
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
       <li class="event__offer">
-        <span class="event__offer-title">${offerName}</span>
+        <span class="event__offer-title">${offerName} ${eventTypeName}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offerPrice}</span>
       </li>

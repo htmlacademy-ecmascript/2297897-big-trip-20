@@ -37,7 +37,7 @@ const generatePoint = () => {
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
     basePrice: generateNumber(MIN_BASE_PRICE, MAX_BASE_PRICE),
     photos: buildPhotos(),
-    dateFrom: dayjs(generateDate()),
+    dateFrom: generateDate(),
     timeDiff: generateNumber(MIN_DIFF_TIME, MAX_DIFF_TIME),
     isFavorite: true,
     offers: {
@@ -52,7 +52,7 @@ const generatePoint = () => {
 
     get endDate() {
       const dateFrom = this.dateFrom;
-      const dateTo = dateFrom.add(this.timeDiff, 'minutes');
+      const dateTo = dayjs(dateFrom).add(this.timeDiff, 'minutes').toDate();
       return dateTo;
     },
 

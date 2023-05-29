@@ -1,10 +1,9 @@
 import dayjs from 'dayjs';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 function createEditPointTemplate(point) {
-  const currentPoint = point;
-  const { description, photos, eventType, eventTypeName, dateFrom, dateTo, cityName, basePrice } = currentPoint;
-  const { offerName, offerPrice } = currentPoint.offers;
+  const { description, photos, eventType, eventTypeName, dateFrom, dateTo, cityName, basePrice } = point;
+  const { offerName, offerPrice } = point.offers;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -72,7 +71,7 @@ function createEditPointTemplate(point) {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${eventTypeName}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${cityName}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${cityName}" list="destination-list-1" autocomplete="off">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -132,34 +131,67 @@ function createEditPointTemplate(point) {
 </li>`;
 }
 
-export default class EditPointView extends AbstractView {
-  #point = null;
+export default class EditPointView extends AbstractStatefulView {
   #handleFormSubmit = null;
-  #handlerRollupClick = null;
+  #handleRollupClick = null;
+  #handleEventChange = null;
 
-  constructor({ point, onFormSubmit, onRollupClick }) {
+  constructor({ point, onFormSubmit, onRollupClick, onEventDestinationChange }) {
     super();
-    this.#point = point;
-    this.#handleFormSubmit = onFormSubmit;
-    this.#handlerRollupClick = onRollupClick;
 
+    this._setState(EditPointView.parsePointToState(point));
+
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleRollupClick = onRollupClick;
+    this.#handleEventChange = onEventDestinationChange;
+
+    this._restoreHandlers();
+  }
+
+  get template() {
+    return createEditPointTemplate(this._state);
+  }
+
+  reset(point) {
+    this.updateElement(
+      EditPointView.parsePointToState(point)
+    );
+  }
+
+  _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#rollupClickHandler);
-  }
-
-  get template() {
-    return createEditPointTemplate(this.#point);
+    this.element.querySelector('.event__type-group')
+      .addEventListener('click', this.#eventTypeClickHandler);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(EditPointView.parseStateToPoint(this._state));
   };
 
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handlerRollupClick();
+    this.#handleRollupClick();
+  };
+
+  #eventTypeClickHandler = (evt) => {
+    evt.preventDefault();
+    const newEventType = evt.target.innerHTML;
+    this.updateElement(
+      {
+        eventType: newEventType,
+        eventTypeName: newEventType
+      }
+    );
+  };
+
+  static parsePointToState = (point) => ({...point});
+
+  static parseStateToPoint = (state) =>{
+    const point = {...state};
+    return point;
   };
 }
