@@ -1,36 +1,44 @@
-import { getRandomArrayElement } from '../utils.js';
+import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
 
+const createOffersListTemplate = (point) =>
+  point.offers
+    .map(
+      (offer) => `
+    <li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>
+  `
+    )
+    .join('');
+
 function createPointTemplate(point) {
-  const { eventType, cityName, eventTypeName, isFavorite } = point;
-  const { offers: { offerName, offerPrices } } = point;
-  const currentOfferPrice = getRandomArrayElement(offerPrices);
+  const { eventType, cityName, eventTypeLabel, isFavorite, dateFrom, dateTo, timeDiff, finalPrice } = point;
+  const offersPointTemplate = createOffersListTemplate(point);
 
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">MAR 18</time>
+    <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${dayjs(dateFrom).format('MMM D')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${eventTypeName} ${cityName}</h3>
+    <h3 class="event__title">${eventTypeLabel} ${cityName}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+        <time class="event__start-time" datetime="${dayjs(dateFrom).toISOString()}">${dayjs(dateFrom).format('HH:mm')}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+        <time class="event__end-time" datetime="${dayjs(dateTo).toISOString()}">${dayjs(dateTo).format('HH:mm')}</time>
       </p>
-      <p class="event__duration">30M</p>
+      <p class="event__duration">${timeDiff}M</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">${currentOfferPrice}</span>
+      &euro;&nbsp;<span class="event__price-value">${finalPrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">${offerName}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${currentOfferPrice}</span>
-      </li>
+    ${offersPointTemplate}
     </ul>
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
       <span class="visually-hidden">Add to favorite</span>
