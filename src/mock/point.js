@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { getRandomArrayElement, generateNumber } from '../utils.js';
+import { getRandomArrayElement, generateNumber, getCityInfo } from '../utils.js';
 import dayjs from 'dayjs';
 import { generateDate } from '../time.js';
 
@@ -53,28 +53,23 @@ const OFFERS = [
   },
 ];
 
-const citiesInformation = new Map(
-  [
-    ['Amsterdam',
-      {
-        photos: 'https://loremflickr.com/248/152?random=1',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-      }
-    ],
-    ['Chaomix',
-      {
-        photos: 'https://loremflickr.com/248/152?random=2',
-        description: 'Cras aliquet varius magna, non porta ligula feugiat eget..'
-      }
-    ],
-    ['Geneva',
-      {
-        photos: 'https://loremflickr.com/248/152?random=3',
-        description: 'Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.'
-      }
-    ]
-  ]
-);
+const citiesInformation = [
+  {
+    cityName: 'Amsterdam',
+    photos: 'https://loremflickr.com/248/152?random=1',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+  },
+  {
+    cityName: 'Chaomix',
+    photos: 'https://loremflickr.com/248/152?random=2',
+    description: 'Cras aliquet varius magna, non porta ligula feugiat eget..'
+  },
+  {
+    cityName: 'Geneva',
+    photos: 'https://loremflickr.com/248/152?random=3',
+    description: 'Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.'
+  },
+];
 
 const generateCitiesDatalist = (citiesArray) => citiesArray.map((city) => `<option value="${city}"></option>`).join('');
 const citiesDatalistElement = generateCitiesDatalist(CITIES);
@@ -105,11 +100,11 @@ const generatePoint = () => {
     },
 
     get cityPhotos() {
-      return citiesInformation.get(this.cityName).photos;
+      return getCityInfo(this.cityName, citiesInformation).photos;
     },
 
     get cityDescription() {
-      return citiesInformation.get(this.cityName).description;
+      return getCityInfo(this.cityName, citiesInformation).description;
     }
   };
 

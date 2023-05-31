@@ -1,5 +1,9 @@
 import dayjs from 'dayjs';
 
+const getCityInfo = (desiredCity, citiesList) => citiesList.find(
+  (currentInfo) => currentInfo.cityName === desiredCity
+);
+
 const getRandomArrayElement = (array) => {
   const randomElement = array[Math.floor(Math.random() * (array.length))];
   return randomElement;
@@ -25,4 +29,4 @@ const sortDay = (firstPoint, secondPoint) => {
 const sortTime = (pointA, pointB) => pointB.timeDiff - pointA.timeDiff;
 const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
 
-export { getRandomArrayElement, generateNumber, updateItem, sortDay, sortTime, sortPrice };
+export { getRandomArrayElement, generateNumber, updateItem, sortDay, sortTime, sortPrice, getCityInfo };

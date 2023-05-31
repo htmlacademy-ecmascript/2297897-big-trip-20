@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { citiesDatalistElement, citiesInformation, OFFERS } from '../mock/point.js';
+import { getCityInfo } from '../utils.js';
 
 const createOffersListTemplate = (point) => OFFERS.map((offer) => {
   if (offer.suitablePointTypes.includes(point.eventType)) {
@@ -215,14 +216,17 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #destinationChangeHandler = (evt) => {
+
     const newCityName = evt.target.value;
-    if (!citiesInformation.has(newCityName)) {
+    const currentCityInfo = getCityInfo(newCityName, citiesInformation);
+    if (currentCityInfo === undefined) {
       return;
     }
+
     this.updateElement({
-      cityName: newCityName,
-      description: citiesInformation.get(newCityName).description,
-      photos: citiesInformation.get(newCityName).photos
+      cityName: currentCityInfo.cityName,
+      description: currentCityInfo.description,
+      photos: currentCityInfo.photos
     });
   };
 
