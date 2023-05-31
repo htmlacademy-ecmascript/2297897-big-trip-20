@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
+import { getTimeDiff } from '../time.js';
 
 const createOffersListTemplate = (point) =>
   point.offers
@@ -15,8 +16,10 @@ const createOffersListTemplate = (point) =>
     .join('');
 
 function createPointTemplate(point) {
-  const { eventType, cityName, eventTypeLabel, isFavorite, dateFrom, dateTo, timeDiff, finalPrice } = point;
+  const { eventType, cityName, eventTypeLabel, isFavorite, dateFrom, dateTo, finalPrice } = point;
   const offersPointTemplate = createOffersListTemplate(point);
+
+  const timeDiff = getTimeDiff(dateFrom, dateTo);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -31,7 +34,7 @@ function createPointTemplate(point) {
         &mdash;
         <time class="event__end-time" datetime="${dayjs(dateTo).toISOString()}">${dayjs(dateTo).format('HH:mm')}</time>
       </p>
-      <p class="event__duration">${timeDiff}M</p>
+      <p class="event__duration">${timeDiff}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${finalPrice}</span>

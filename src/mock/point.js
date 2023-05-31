@@ -6,8 +6,8 @@ import { generateDate } from '../time.js';
 const MIN_BASE_PRICE = 1000;
 const MAX_BASE_PRICE = 5000;
 
-const MIN_DIFF_TIME = 5;
-const MAX_DIFF_TIME = 60;
+const MIN_DIFF_TIME = 30;
+const MAX_DIFF_TIME = 2880;
 
 const TYPES = [
   'taxi',
@@ -81,7 +81,6 @@ const generatePoint = () => {
     cityName: getRandomArrayElement(CITIES),
     basePrice: generateNumber(MIN_BASE_PRICE, MAX_BASE_PRICE),
     dateFrom: generateDate(),
-    timeDiff: generateNumber(MIN_DIFF_TIME, MAX_DIFF_TIME),
     isFavorite: generateNumber(0, 1),
 
     get typeName() {
@@ -91,7 +90,7 @@ const generatePoint = () => {
 
     get endDate() {
       const dateFrom = this.dateFrom;
-      const dateTo = dayjs(dateFrom).add(this.timeDiff, 'minutes').toDate();
+      const dateTo = dayjs(dateFrom).add(generateNumber(MIN_DIFF_TIME, MAX_DIFF_TIME), 'minutes').toDate();
       return dateTo;
     },
 
