@@ -16,10 +16,6 @@ const generateNumber = (min, max) => {
   return number;
 };
 
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
 const sortDay = (firstPoint, secondPoint) => {
   const firstPointDate = dayjs(firstPoint.dateFrom);
   const secondPointDate = dayjs(secondPoint.dateFrom);
@@ -29,4 +25,4 @@ const sortDay = (firstPoint, secondPoint) => {
 const sortTime = (pointA, pointB) => pointB.timeDiff - pointA.timeDiff;
 const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
 
-export { getRandomArrayElement, generateNumber, updateItem, sortDay, sortTime, sortPrice, getCityInfo };
+export { getRandomArrayElement, generateNumber, sortDay, sortTime, sortPrice, getCityInfo };

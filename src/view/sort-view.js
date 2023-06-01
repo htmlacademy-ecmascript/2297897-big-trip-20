@@ -1,12 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-
-const SortType = {
-  DAY: 'day',
-  EVENT: 'eventSort',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFERS: 'offers'
-};
+import { SortType } from '../const.js';
 
 function createSortTemplate() {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -65,4 +58,3 @@ export default class SortView extends AbstractView {
   };
 }
 
-export { SortType };

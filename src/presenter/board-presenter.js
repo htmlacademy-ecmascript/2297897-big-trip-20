@@ -1,9 +1,9 @@
 import ListView from '../view/list-view.js';
-import SortView, { SortType } from '../view/sort-view.js';
+import SortView from '../view/sort-view.js';
 import { RenderPosition, render } from '../framework/render.js';
 import { sortDay, sortTime, sortPrice } from '../utils.js';
 import PointPresenter from './point-presenter.js';
-
+import { SortType } from '../const.js';
 export default class PointsPresenter {
   #sortComponent = null;
   #listComponent = new ListView();
@@ -16,6 +16,8 @@ export default class PointsPresenter {
   constructor({ bodyContainer, pointsModel }) {
     this.#bodyContainer = bodyContainer;
     this.#pointsModel = pointsModel;
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -64,14 +66,26 @@ export default class PointsPresenter {
     render(this.#sortComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
   }
 
-  #handlePointChange = (updatedPoint) => {
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    //Место для обновления модели
+    // actionType - действие, которое приводит к пониманию, какой метод модели вызвать
+    // updateType - тип изменений, который приводит к пониманию, что нужно обновить
+    // update - непосредственно сами данные
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    //В зависимости от типа изменений решаем, что делать
+    // обновить часть списка (пр. описание)
+    // обновить сам список (пр. удалить задачу)
+    // обновить всю доску (например, при переключении фильтра)
   };
 
   #renderPoint(point) {
     const pointComponentPresenter = new PointPresenter({
       pointsListContainer: this.#listComponent.element,
-      onDataChange: this.#handlePointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
       point: point
     });
