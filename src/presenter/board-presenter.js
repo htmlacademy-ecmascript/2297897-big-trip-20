@@ -20,6 +20,10 @@ export default class PointsPresenter {
     this.#pointsModel = pointsModel;
   }
 
+  get points() {
+    return this.#pointsModel.points;
+  }
+
   init() {
     this.#tripEvents = [...this.#pointsModel.points];
     this.#sourcedTripEvents = [...this.#pointsModel.points];
