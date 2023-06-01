@@ -1,15 +1,13 @@
 import ListView from '../view/list-view.js';
 import SortView, { SortType } from '../view/sort-view.js';
 import { RenderPosition, render } from '../framework/render.js';
-import { updateItem, sortDay, sortTime, sortPrice } from '../utils.js';
+import { sortDay, sortTime, sortPrice } from '../utils.js';
 import PointPresenter from './point-presenter.js';
 
 export default class PointsPresenter {
   #sortComponent = null;
   #listComponent = new ListView();
   #bodyContainer = null;
-  #tripEvents = [];
-  #sourcedTripEvents = [];
   #pointsModel = null;
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
@@ -21,13 +19,18 @@ export default class PointsPresenter {
   }
 
   get points() {
+    switch(this.#currentSortType){
+      case SortType.DAY:
+        return [...this.#pointsModel.points].sort(sortDay);
+      case SortType.TIME:
+        return [...this.#pointsModel.points].sort(sortTime);
+      case SortType.PRICE:
+        return [...this.#pointsModel.points].sort(sortPrice);
+    }
     return this.#pointsModel.points;
   }
 
   init() {
-    this.#tripEvents = [...this.#pointsModel.points];
-    this.#sourcedTripEvents = [...this.#pointsModel.points];
-    this.#sortPoints(this.#currentSortType);
     this.#renderBoard();
   }
 
@@ -35,29 +38,12 @@ export default class PointsPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #sortPoints(sortType) {
-    switch (sortType) {
-      case SortType.DAY:
-        this.#tripEvents.sort(sortDay);
-        break;
-      case SortType.TIME:
-        this.#tripEvents.sort(sortTime);
-        break;
-      case SortType.PRICE:
-        this.#tripEvents.sort(sortPrice);
-        break;
-      default:
-        this.#tripEvents = [...this.#sourcedTripEvents];
-    }
-    this.#currentSortType = sortType;
-  }
-
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
 
-    this.#sortPoints(sortType);
+    this.#currentSortType = sortType;
     this.#clearPointList();
     this.#renderPointList();
   };
@@ -68,7 +54,7 @@ export default class PointsPresenter {
   }
 
   #renderPointList() {
-    this.#tripEvents.forEach((point) => this.#renderPoint(point));
+    this.points.forEach((point) => this.#renderPoint(point));
   }
 
   #renderSort() {
@@ -79,8 +65,6 @@ export default class PointsPresenter {
   }
 
   #handlePointChange = (updatedPoint) => {
-    this.#tripEvents = updateItem(this.#tripEvents, updatedPoint);
-    this.#sourcedTripEvents = updateItem(this.#sourcedTripEvents, updatedPoint);
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
