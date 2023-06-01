@@ -1,13 +1,13 @@
 import { nanoid } from 'nanoid';
-import { getRandomArrayElement, generateNumber } from '../utils.js';
+import { getRandomArrayElement, generateNumber, getCityInfo } from '../utils.js';
 import dayjs from 'dayjs';
 import { generateDate } from '../time.js';
 
 const MIN_BASE_PRICE = 1000;
 const MAX_BASE_PRICE = 5000;
 
-const MIN_DIFF_TIME = 5;
-const MAX_DIFF_TIME = 60;
+const MIN_DIFF_TIME = 30;
+const MAX_DIFF_TIME = 2880;
 
 const TYPES = [
   'taxi',
@@ -53,28 +53,23 @@ const OFFERS = [
   },
 ];
 
-const citiesInformation = new Map(
-  [
-    ['Amsterdam',
-      {
-        photos: 'https://loremflickr.com/248/152?random=1',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-      }
-    ],
-    ['Chaomix',
-      {
-        photos: 'https://loremflickr.com/248/152?random=2',
-        description: 'Cras aliquet varius magna, non porta ligula feugiat eget..'
-      }
-    ],
-    ['Geneva',
-      {
-        photos: 'https://loremflickr.com/248/152?random=3',
-        description: 'Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.'
-      }
-    ]
-  ]
-);
+const citiesInformation = [
+  {
+    cityName: 'Amsterdam',
+    photos: 'https://loremflickr.com/248/152?random=1',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+  },
+  {
+    cityName: 'Chaomix',
+    photos: 'https://loremflickr.com/248/152?random=2',
+    description: 'Cras aliquet varius magna, non porta ligula feugiat eget..'
+  },
+  {
+    cityName: 'Geneva',
+    photos: 'https://loremflickr.com/248/152?random=3',
+    description: 'Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.'
+  },
+];
 
 const generateCitiesDatalist = (citiesArray) => citiesArray.map((city) => `<option value="${city}"></option>`).join('');
 const citiesDatalistElement = generateCitiesDatalist(CITIES);
@@ -86,7 +81,6 @@ const generatePoint = () => {
     cityName: getRandomArrayElement(CITIES),
     basePrice: generateNumber(MIN_BASE_PRICE, MAX_BASE_PRICE),
     dateFrom: generateDate(),
-    timeDiff: generateNumber(MIN_DIFF_TIME, MAX_DIFF_TIME),
     isFavorite: generateNumber(0, 1),
 
     get typeName() {
@@ -96,7 +90,7 @@ const generatePoint = () => {
 
     get endDate() {
       const dateFrom = this.dateFrom;
-      const dateTo = dayjs(dateFrom).add(this.timeDiff, 'minutes').toDate();
+      const dateTo = dayjs(dateFrom).add(generateNumber(MIN_DIFF_TIME, MAX_DIFF_TIME), 'minutes').toDate();
       return dateTo;
     },
 
@@ -105,11 +99,11 @@ const generatePoint = () => {
     },
 
     get cityPhotos() {
-      return citiesInformation.get(this.cityName).photos;
+      return getCityInfo(this.cityName, citiesInformation).photos;
     },
 
     get cityDescription() {
-      return citiesInformation.get(this.cityName).description;
+      return getCityInfo(this.cityName, citiesInformation).description;
     }
   };
 

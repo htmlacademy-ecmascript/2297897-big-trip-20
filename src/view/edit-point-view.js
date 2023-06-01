@@ -1,6 +1,10 @@
 import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { citiesDatalistElement, citiesInformation, OFFERS } from '../mock/point.js';
+import { getCityInfo } from '../utils.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/material_blue.css';
 
 const createOffersListTemplate = (point) => OFFERS.map((offer) => {
   if (offer.suitablePointTypes.includes(point.eventType)) {
@@ -155,6 +159,7 @@ function createEditPointTemplate(point) {
 export default class EditPointView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleRollupClick = null;
+  #datepicker = null;
 
   constructor({ point, onFormSubmit, onRollupClick }) {
     super();
@@ -172,6 +177,15 @@ export default class EditPointView extends AbstractStatefulView {
 
   get template() {
     return createEditPointTemplate(this._state);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
   }
 
   reset(point) {
@@ -192,8 +206,52 @@ export default class EditPointView extends AbstractStatefulView {
     if (this._state.availableOffers.length !== 0) {
       this.element.querySelector('.event__section--offers')
         .addEventListener('change', this.#offerChangeHandler);
+
     }
+
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
   }
+
+  #setDatepickerFrom() {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: 'd/m/y H:i',
+        maxDate: this._state.dateTo,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler
+      }
+    );
+  }
+
+  #setDatepickerTo() {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: 'd/m/y H:i',
+        minDate: this._state.dateFrom,
+        defaultDate: this._state.dateTo,
+        onChange: this.#dateToChangeHandler
+      }
+    );
+  }
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate
+    });
+  };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
@@ -215,14 +273,17 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #destinationChangeHandler = (evt) => {
+
     const newCityName = evt.target.value;
-    if (!citiesInformation.has(newCityName)) {
+    const currentCityInfo = getCityInfo(newCityName, citiesInformation);
+    if (currentCityInfo === undefined) {
       return;
     }
+
     this.updateElement({
-      cityName: newCityName,
-      description: citiesInformation.get(newCityName).description,
-      photos: citiesInformation.get(newCityName).photos
+      cityName: currentCityInfo.cityName,
+      description: currentCityInfo.description,
+      photos: currentCityInfo.photos
     });
   };
 
