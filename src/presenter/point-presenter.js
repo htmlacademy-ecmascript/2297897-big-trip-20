@@ -38,7 +38,8 @@ export default class PointPresenter {
     this.#pointEditComponent = new EditPointView({
       point: this.#point,
       onFormSubmit: this.#formSubmitHandler,
-      onRollupClick: this.#rollupClickHandler
+      onRollupClick: this.#rollupClickHandler,
+      onDeleteClick: this.#deleteClickHandler
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -88,6 +89,15 @@ export default class PointPresenter {
 
   #editClickHandler = () => {
     this.#replacePointToForm();
+  };
+
+  #deleteClickHandler = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point
+    );
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #formSubmitHandler = (point) => {
