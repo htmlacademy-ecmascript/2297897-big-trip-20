@@ -5,6 +5,7 @@ import { sortDay, sortTime, sortPrice } from '../utils.js';
 import PointPresenter from './point-presenter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import { filter } from '../filter.js';
+
 export default class BoardPresenter {
   #sortComponent = null;
   #listComponent = new ListView();

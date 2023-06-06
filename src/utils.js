@@ -27,8 +27,8 @@ const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
 
-const isPointPast = (dateTo) => dayjs(dateTo).isAfter(dayjs());
-const isPointPresent = (dateFrom, dateTo) => dayjs().isBefore(dayjs(dateFrom)) && dayjs(dateTo).isAfter(dayjs());
-const isPointFuture = (dateFrom) => dayjs(dateFrom).isBefore(dayjs());
+const isPointPast = ({dateTo, dateFrom}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isAfter(dayjs(dateTo));
+const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
+const isPointFuture = ({dateFrom, dateTo}) => dayjs().isBefore(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 
 export { getRandomArrayElement, generateNumber, sortDay, sortTime, sortPrice, getCityInfo, isDatesEqual, isPointPast, isPointPresent, isPointFuture };
