@@ -3,12 +3,14 @@ import SortView from '../view/sort-view.js';
 import { RenderPosition, render, remove } from '../framework/render.js';
 import { sortDay, sortTime, sortPrice } from '../utils.js';
 import PointPresenter from './point-presenter.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { filter } from '../filter.js';
+import NoPointsView from '../view/no-point-view.js';
 
 export default class BoardPresenter {
   #sortComponent = null;
   #listComponent = new ListView();
+  #noPointsComponent = null;
   #bodyContainer = null;
 
   #pointsModel = null;
@@ -16,7 +18,7 @@ export default class BoardPresenter {
 
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
-
+  #filterType = FilterType.EVERYTHING;
 
   constructor({ bodyContainer, pointsModel, filtersModel}) {
     this.#bodyContainer = bodyContainer;
@@ -28,9 +30,9 @@ export default class BoardPresenter {
   }
 
   get points() {
-    const filterType = this.#filtersModel.filter;
+    this.#filterType = this.#filtersModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoints = filter[filterType](points);
+    const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
       case SortType.DAY:
@@ -110,12 +112,23 @@ export default class BoardPresenter {
     this.#pointPresenters.set(point.id, pointComponentPresenter);
   }
 
+  #renderNoPoints() {
+    this.#noPointsComponent = new NoPointsView ({
+      filterType: this.#filterType
+    });
+
+    render(this.#noPointsComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
+  }
+
   #clearBoard({resetSortType = false } = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
     remove(this.#sortComponent);
-    //remove(this.#noPointsComponent);
+
+    if(this.#noPointsComponent){
+      remove(this.#noPointsComponent);
+    }
 
     if(resetSortType){
       this.#currentSortType = SortType.DEFAULT;
@@ -129,7 +142,7 @@ export default class BoardPresenter {
     const pointsCount = points.length;
 
     if (pointsCount === 0){
-      //this.#renderNoPoints();
+      this.#renderNoPoints();
       return;
     }
 
