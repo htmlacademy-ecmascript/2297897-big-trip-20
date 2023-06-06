@@ -23,4 +23,11 @@ const UpdateType = {
   MAJOR: 'MAJOR'
 };
 
-export {Mode, SortType, UserAction, UpdateType };
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+export { Mode, SortType, UserAction, UpdateType, FilterType };

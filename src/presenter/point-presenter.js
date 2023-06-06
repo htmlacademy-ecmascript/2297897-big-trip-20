@@ -2,6 +2,7 @@ import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import { replace, render, remove } from '../framework/render.js';
 import { UserAction, UpdateType, Mode } from '../const.js';
+import { isDatesEqual } from '../utils.js';
 
 export default class PointPresenter {
   #handleDataChange = null;
@@ -82,7 +83,7 @@ export default class PointPresenter {
   #favoriteClickHandler = () => {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#point, isFavorite: !this.#point.isFavorite}
     );
   };
@@ -100,11 +101,15 @@ export default class PointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #formSubmitHandler = (point) => {
+  #formSubmitHandler = (update) => {
+    const isMinorUpdate = isDatesEqual(this.#point.dateTo, update.dateTo);
+
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
-      point
+      isMinorUpdate
+        ? UpdateType.PATCH
+        : UpdateType.MINOR,
+      update
     );
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);

@@ -51,10 +51,6 @@ export default class PointsPresenter {
     this.#renderBoard();
   };
 
-  #renderPointList() {
-    this.points.forEach((point) => this.#renderPoint(point));
-  }
-
   #renderSort() {
     this.#sortComponent = new SortView({
       currentSortType: this.#currentSortType,
@@ -73,7 +69,7 @@ export default class PointsPresenter {
         break;
       case UserAction.DELETE_POINT:
         this.#pointsModel.deletePoint(updateType, update);
-        break; //123123123123123
+        break;
 
     }
   };
@@ -128,6 +124,6 @@ export default class PointsPresenter {
     }
 
     this.#renderSort();
-    this.#renderPointList();
+    this.points.forEach((point) => this.#renderPoint(point));
   }
 }
