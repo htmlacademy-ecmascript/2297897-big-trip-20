@@ -1,4 +1,4 @@
-import PointsPresenter from './presenter/board-presenter.js';
+import BoardPresenter from './presenter/board-presenter.js';
 import PointInfoView from './view/point-info-view.js';
 import PointsModel from './model/points-model.js';
 import FilterModel from './model/filters-model.js';
@@ -12,9 +12,10 @@ const tripEventsContainer = document.querySelector('.trip-events');
 const pointsModel = new PointsModel();
 const filtersModel = new FilterModel();
 
-const pointsPresenter = new PointsPresenter({
+const boardPresenter = new BoardPresenter({
   bodyContainer: tripEventsContainer,
-  pointsModel
+  pointsModel,
+  filtersModel
 });
 
 const filtersPresenter = new FiltersPresenter({
@@ -26,4 +27,4 @@ const filtersPresenter = new FiltersPresenter({
 render(new PointInfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 filtersPresenter.init();
-pointsPresenter.init();
+boardPresenter.init();
