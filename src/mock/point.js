@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { getRandomArrayElement, generateNumber, getCityInfo } from '../utils.js';
 import dayjs from 'dayjs';
 import { generateDate } from '../time.js';
+import { TYPES } from '../const.js';
 
 const MIN_BASE_PRICE = 1000;
 const MAX_BASE_PRICE = 5000;
@@ -9,17 +10,6 @@ const MAX_BASE_PRICE = 5000;
 const MIN_DIFF_TIME = 30;
 const MAX_DIFF_TIME = 2880;
 
-const TYPES = [
-  'taxi',
-  'bus',
-  'train',
-  'ship',
-  'drive',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'restaurant'
-];
 const CITIES = [
   'Amsterdam',
   'Chaomix',

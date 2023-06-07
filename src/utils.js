@@ -16,6 +16,8 @@ const generateNumber = (min, max) => {
   return number;
 };
 
+const toUpperCaseFirstLetter = (word) => `${word.slice(0,1).toUpperCase()}${word.slice(1)}`;
+
 const sortDay = (firstPoint, secondPoint) => {
   const firstPointDate = dayjs(firstPoint.dateFrom);
   const secondPointDate = dayjs(secondPoint.dateFrom);
@@ -31,4 +33,4 @@ const isPointPast = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && 
 const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 const isPointFuture = ({dateFrom, dateTo}) => dayjs().isBefore(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 
-export { getRandomArrayElement, generateNumber, sortDay, sortTime, sortPrice, getCityInfo, isDatesEqual, isPointPast, isPointPresent, isPointFuture };
+export { getRandomArrayElement, generateNumber, sortDay, sortTime, sortPrice, getCityInfo, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter };

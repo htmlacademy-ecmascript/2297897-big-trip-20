@@ -30,4 +30,16 @@ const FilterType = {
   PAST: 'past'
 };
 
-export { Mode, SortType, UserAction, UpdateType, FilterType };
+const TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant'
+];
+
+export { Mode, SortType, UserAction, UpdateType, FilterType, TYPES };

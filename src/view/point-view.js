@@ -16,7 +16,7 @@ const createOffersListTemplate = (point) =>
     .join('');
 
 function createPointTemplate(point) {
-  const { eventType, cityName, eventTypeLabel, isFavorite, dateFrom, dateTo, finalPrice } = point;
+  const { eventType, cityName, eventTypeLabel, isFavorite, dateFrom, dateTo, basePrice } = point;
   const offersPointTemplate = createOffersListTemplate(point);
 
   const timeDiff = getTimeDiff(dateFrom, dateTo);
@@ -37,7 +37,7 @@ function createPointTemplate(point) {
       <p class="event__duration">${timeDiff}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">${finalPrice}</span>
+      &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
