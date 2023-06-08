@@ -16,9 +16,7 @@ const generateNumber = (min, max) => {
   return number;
 };
 
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
+const toUpperCaseFirstLetter = (word) => `${word.slice(0,1).toUpperCase()}${word.slice(1)}`;
 
 const sortDay = (firstPoint, secondPoint) => {
   const firstPointDate = dayjs(firstPoint.dateFrom);
@@ -29,4 +27,10 @@ const sortDay = (firstPoint, secondPoint) => {
 const sortTime = (pointA, pointB) => pointB.timeDiff - pointA.timeDiff;
 const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
 
-export { getRandomArrayElement, generateNumber, updateItem, sortDay, sortTime, sortPrice, getCityInfo };
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
+
+const isPointPast = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isAfter(dayjs(dateTo));
+const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
+const isPointFuture = ({dateFrom, dateTo}) => dayjs().isBefore(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
+
+export { getRandomArrayElement, generateNumber, sortDay, sortTime, sortPrice, getCityInfo, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter };
