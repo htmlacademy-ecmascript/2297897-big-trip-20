@@ -7,10 +7,6 @@ export default class PointsModel extends Observable {
   #pointsApiService = null;
   #points = Array.from({length: AMOUNT_OF_POINTS}, generatePoint);
 
-  get points(){
-    return this.#points;
-  }
-
   constructor({pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
@@ -18,6 +14,10 @@ export default class PointsModel extends Observable {
     this.#pointsApiService.points.then((points) => {
       console.log(points);
     });
+  }
+
+  get points(){
+    return this.#points;
   }
 
   updatePoint(updateType, update) {
