@@ -1,28 +1,44 @@
 import Observable from '../framework/observable.js';
-import { generatePoint } from '../mock/point.js';
-
-const AMOUNT_OF_POINTS = 5;
+import {UpdateType} from '../const.js';
 
 export default class PointsModel extends Observable {
   #pointsApiService = null;
-  #points = Array.from({length: AMOUNT_OF_POINTS}, generatePoint);
+  #points = [];
+  #offers = [];
+  #destinations = [];
 
   constructor({pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
-
-    this.#pointsApiService.points.then((points) => {
-      console.log(points.map(this.#adaptToClient));
-    });
   }
 
   get points(){
     return this.#points;
   }
 
-  updatePoint(updateType, update) {
+  get offers() {
+    return this.#offers;
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }
+
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient());
+      this.#offers = await this.#pointsApiService.offers;
+      this.#destinations = await this.#pointsApiService.destinations;
+    } catch (err){
+      this.#points = [];
+    }
+    this._notify(UpdateType.INIT);
+  }
+
+  updatePoint(updateType, updateElement) {
     const index = this.#points.findIndex(
-      (task) => task.id === update.id
+      (task) => task.id === updateElement.id
     );
 
     if (index === -1) {
@@ -31,17 +47,17 @@ export default class PointsModel extends Observable {
 
     this.#points = [
       ...this.#points.slice(0, index),
-      update,
+      updateElement,
       ...this.#points.slice(index + 1)
     ];
 
-    this._notify(updateType, update);
+    this._notify(updateType, updateElement);
   }
 
-  addPoint(updateType, update) {
-    this.#points.unshift(update);
+  addPoint(updateType, updateElement) {
+    this.#points.unshift(updateElement);
 
-    this._notify(updateType, update);
+    this._notify(updateType, updateElement);
   }
 
   #adaptToClient(point) {
@@ -55,7 +71,6 @@ export default class PointsModel extends Observable {
       dateTo: new Date(point['date_to']),
       isFavorite: point['is_favorite'],
       offers: point['offers'],
-
     };
 
     delete adaptedPoint['type'];
@@ -68,9 +83,9 @@ export default class PointsModel extends Observable {
     return adaptedPoint;
   }
 
-  deletePoint(updateType, update){
+  deletePoint(updateType, updateElement){
     const index = this.#points.findIndex(
-      (task) => task.id === update.id
+      (task) => task.id === updateElement.id
     );
 
     if (index === -1) {

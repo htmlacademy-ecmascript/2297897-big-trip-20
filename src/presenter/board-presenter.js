@@ -7,11 +7,13 @@ import NewPointPresenter from './new-point-presenter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { filter } from '../filter.js';
 import NoPointsView from '../view/no-point-view.js';
+import LoadingView from '../view/loading-view.js';
 
 export default class BoardPresenter {
   #sortComponent = null;
   #listComponent = new ListView();
   #noPointsComponent = null;
+  #loadingComponent = new LoadingView();
   #bodyContainer = null;
 
   #pointsModel = null;
@@ -21,6 +23,7 @@ export default class BoardPresenter {
   #newPointPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor({ bodyContainer, pointsModel, filtersModel, onNewPointDestroy}) {
     this.#bodyContainer = bodyContainer;
@@ -114,6 +117,11 @@ export default class BoardPresenter {
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -122,7 +130,9 @@ export default class BoardPresenter {
       pointsListContainer: this.#listComponent.element,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
-      point: point
+      point: point,
+      offers: this.#pointsModel.offers,
+      destinations: this.#pointsModel.destinations
     });
     this.#pointPresenters.set(point.id, pointComponentPresenter);
   }
@@ -135,6 +145,10 @@ export default class BoardPresenter {
     render(this.#noPointsComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
+  }
+
   #clearBoard({resetSortType = false } = {}) {
 
     this.#newPointPresenter.destroy();
@@ -142,18 +156,24 @@ export default class BoardPresenter {
     this.#pointPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if(this.#noPointsComponent){
       remove(this.#noPointsComponent);
     }
 
     if(resetSortType){
-      this.#currentSortType = SortType.DEFAULT;
+      this.#currentSortType = SortType.DAY;
     }
   }
 
   #renderBoard() {
     render(this.#listComponent, this.#bodyContainer);
+
+    if(this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
 
     const points = this.points;
     const pointsCount = points.length;

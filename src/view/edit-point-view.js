@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { citiesDatalistElement, citiesInformation, OFFERS } from '../mock/point.js';
 import { getCityInfo, toUpperCaseFirstLetter } from '../utils.js';
 import flatpickr from 'flatpickr';
 import { TYPES } from '../const.js';
@@ -17,7 +16,7 @@ const BLANK_POINT = {
   offers: []
 };
 
-const createOffersListTemplate = (point = BLANK_POINT) => OFFERS.map((offer) => {
+const createOffersListTemplate = (point = BLANK_POINT, offers) => OFFERS.map((offer) => {
   if (offer.suitablePointTypes.includes(point.eventType)) {
     const checked = point.offers.some((element) => element.type === offer.type) ? 'checked' : '';
     return `
@@ -159,7 +158,7 @@ export default class EditPointView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor({ point = BLANK_POINT, onFormSubmit, onRollupClick, onDeleteClick }) {
+  constructor({ point = BLANK_POINT, offers, destinations, onFormSubmit, onRollupClick, onDeleteClick }) {
     super();
 
     this._setState(EditPointView.parsePointToState(point), {
