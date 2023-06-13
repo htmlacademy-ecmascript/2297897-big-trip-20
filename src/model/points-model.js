@@ -25,11 +25,11 @@ export default class PointsModel extends Observable {
   }
 
   async init() {
+    this.#offers = await this.#pointsApiService.offers;
+    this.#destinations = await this.#pointsApiService.destinations;
     try {
       const points = await this.#pointsApiService.points;
-      this.#points = points.map(this.#adaptToClient());
-      this.#offers = await this.#pointsApiService.offers;
-      this.#destinations = await this.#pointsApiService.destinations;
+      this.#points = points.map(this.#adaptToClient);
     } catch (err){
       this.#points = [];
     }
@@ -65,7 +65,7 @@ export default class PointsModel extends Observable {
       ...point,
       id: point['id'],
       eventType: point['type'],
-      cityName: point['destination'],
+      destinationId: point['destination'],
       basePrice: point['base_price'],
       dateFrom: new Date(point['date_from']),
       dateTo: new Date(point['date_to']),

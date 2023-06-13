@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { getCityInfo, toUpperCaseFirstLetter } from '../utils.js';
+import {getDestinationInfo, toUpperCaseFirstLetter, getValueFromString} from '../utils.js';
 import flatpickr from 'flatpickr';
-import { TYPES } from '../const.js';
+import {TYPES} from '../const.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/material_blue.css';
 
@@ -16,27 +16,25 @@ const BLANK_POINT = {
   offers: []
 };
 
-const createOffersListTemplate = (point = BLANK_POINT, offers) => OFFERS.map((offer) => {
-  if (offer.suitablePointTypes.includes(point.eventType)) {
-    const checked = point.offers.some((element) => element.type === offer.type) ? 'checked' : '';
-    return `
+const createOffersListTemplate = (point = BLANK_POINT) => point.availableOffers.map((availableOffer) => {
+  const {offers: pickedOffers} = point;
+  const checked = pickedOffers.includes(availableOffer.id) ? 'checked' : '';
+  return `
     <div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden"
-      id="event-offer-${offer.type}"
+      id="event-offer-${getValueFromString(availableOffer.title)}"
       type="checkbox"
-      name="event-offer-${offer.type}"
-      value="${offer.type}"
+      name="event-offer-${point.eventType}"
+      value="${availableOffer.title}"
       ${checked}>
-      <label class="event__offer-label" for="event-offer-${offer.type}">
-        <span class="event__offer-title">${offer.title}</span>
+      <label class="event__offer-label" for="event-offer-${getValueFromString(availableOffer.title)}">
+        <span class="event__offer-title">${availableOffer.title}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
+        <span class="event__offer-price">${availableOffer.price}</span>
       </label>
     </div>
     `;
-  }
-}
-).join('');
+}).join('');
 
 const createOffersTemplate = (point) => {
   const offersListTemplate = createOffersListTemplate(point);
@@ -50,8 +48,12 @@ const createOffersTemplate = (point) => {
   `;
 };
 
-const createDestinationTemplate = (point) => {
-  const {description, photos} = point;
+const createPhotosTapeTemplate = (pictures) => pictures.map((picture) =>
+  `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
+
+const createDestinationInfoTemplate = (destinationInfo) => {
+  const {description, pictures} = destinationInfo;
+  const photosTapeTemplate = createPhotosTapeTemplate(pictures);
   return `<section class="event__details">
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -59,7 +61,7 @@ const createDestinationTemplate = (point) => {
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            <img class="event__photo" src="${photos}" alt="Event photo">
+            ${photosTapeTemplate}
           </div>
         </div>
       </section>
@@ -82,11 +84,15 @@ const createEventTypesTemplate = (currentType) =>
   </div>`
   ).join('');
 
+const createDestinationListTemplate = (destinations) => destinations.map((destination) =>
+  `<option value="${destination.name}"></option>`).join('');
 
-function createEditPointTemplate(point) {
-  const { eventType, eventTypeLabel, dateFrom, dateTo, cityName, basePrice, availableOffers } = point;
+function createEditPointTemplate(point, offers, destinations) {
+  const { eventType, dateFrom, dateTo, destinationId, basePrice, availableOffers } = point;
   const offersTemplate = availableOffers.length !== 0 ? createOffersTemplate(point) : '';
-  const destinationTemplate = cityName !== '' ? createDestinationTemplate(point) : '';
+  const destinationInfo = getDestinationInfo(destinationId, destinations);
+  const destinationsListTemplate = createDestinationListTemplate(destinations);
+  const destinationTemplate = destinationId !== '' ? createDestinationInfoTemplate(destinationInfo) : '';
   const eventTypesTemplate = createEventTypesTemplate(eventType);
   const isNewPoint = !point.id;
   const templateButtons = isNewPoint
@@ -113,11 +119,11 @@ function createEditPointTemplate(point) {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${eventTypeLabel}
+          ${toUpperCaseFirstLetter(eventType)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${cityName}" list="destination-list-1" autocomplete="off" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationInfo.name}" list="destination-list-1" autocomplete="off" required>
         <datalist id="destination-list-1">
-          ${citiesDatalistElement}
+          ${destinationsListTemplate}
         </datalist>
       </div>
 
@@ -152,6 +158,9 @@ function createEditPointTemplate(point) {
 }
 
 export default class EditPointView extends AbstractStatefulView {
+  #offers = [];
+  #destinations = [];
+
   #handleFormSubmit = null;
   #handleRollupClick = null;
   #handleDeleteClick = null;
@@ -161,20 +170,23 @@ export default class EditPointView extends AbstractStatefulView {
   constructor({ point = BLANK_POINT, offers, destinations, onFormSubmit, onRollupClick, onDeleteClick }) {
     super();
 
+    this.#offers = offers;
+    this.#destinations = destinations;
+
     this._setState(EditPointView.parsePointToState(point), {
-      availableOffers: []
+      availableOffers: [],
     });
 
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupClick = onRollupClick;
     this.#handleDeleteClick = onDeleteClick;
 
-    this.#updateAvailableOffers();
+    this.#updateAvailableOffers(this.#offers);
     this._restoreHandlers();
   }
 
   get template() {
-    return createEditPointTemplate(this._state);
+    return createEditPointTemplate(this._state, this.#offers, this.#destinations);
   }
 
   removeElement() {
@@ -274,14 +286,16 @@ export default class EditPointView extends AbstractStatefulView {
     this.#handleFormSubmit(EditPointView.parseStateToPoint(this._state));
   };
 
-  #updateAvailableOffers() {
-    const availableOffers = OFFERS.filter((offer) =>
-      offer.suitablePointTypes.includes(this._state.eventType)
+  #updateAvailableOffers = (availableOffers) => {
+    const suitableType = this.#offers.find((offer) =>
+      offer.type === this._state.eventType
     );
+    availableOffers = suitableType.offers;
+
     this._setState({ availableOffers });
 
     return availableOffers;
-  }
+  };
 
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
@@ -289,17 +303,14 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #destinationChangeHandler = (evt) => {
+    const currentCityInfo = this.#destinations.find((destination) => destination.name === evt.target.value);
 
-    const newCityName = evt.target.value;
-    const currentCityInfo = getCityInfo(newCityName, citiesInformation);
     if (currentCityInfo === undefined) {
       return;
     }
 
     this.updateElement({
-      cityName: currentCityInfo.cityName,
-      description: currentCityInfo.description,
-      photos: currentCityInfo.photos
+      destinationId: currentCityInfo.id
     });
   };
 
@@ -329,15 +340,16 @@ export default class EditPointView extends AbstractStatefulView {
     if (!evt.target.classList.contains('event__offer-checkbox') /* !== 'event__offer-checkbox'*/) {
       return;
     }
-    const offerType = evt.target.value;
+
+    const pickedOffer = this._state.availableOffers.find((offer) => offer.title === evt.target.value);
     const isChecked = evt.target.checked;
     const offers = this._state.offers;
     if (isChecked) {
       offers.push(
-        OFFERS.find((offer) => offer.type === offerType)
+        this.#offers.find((offer) => offer.id === pickedOffer.id)
       );
     } else {
-      const element = offers.find((offer) => offer.type === offerType);
+      const element = offers.find((offerId) => offerId === pickedOffer.id);
       const index = offers.indexOf(element);
       offers.splice(index, 1);
     }

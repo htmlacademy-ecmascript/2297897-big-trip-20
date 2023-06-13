@@ -50,3 +50,4 @@ render(new PointInfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 filtersPresenter.init();
 boardPresenter.init();
+pointsModel.init();
