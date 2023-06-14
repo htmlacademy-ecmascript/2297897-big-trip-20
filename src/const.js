@@ -31,16 +31,5 @@ const FilterType = {
   PAST: 'past'
 };
 
-const TYPES = [
-  'taxi',
-  'bus',
-  'train',
-  'ship',
-  'drive',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'restaurant'
-];
 
-export { Mode, SortType, UserAction, UpdateType, FilterType, TYPES };
+export { Mode, SortType, UserAction, UpdateType, FilterType };
