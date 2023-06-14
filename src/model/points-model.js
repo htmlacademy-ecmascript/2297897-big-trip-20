@@ -36,7 +36,7 @@ export default class PointsModel extends Observable {
     this._notify(UpdateType.INIT);
   }
 
-  updatePoint(updateType, updateElement) {
+  async updatePoint(updateType, updateElement) {
     const index = this.#points.findIndex(
       (task) => task.id === updateElement.id
     );
@@ -45,19 +45,48 @@ export default class PointsModel extends Observable {
       throw new Error ('Can\'t update unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      updateElement,
-      ...this.#points.slice(index + 1)
-    ];
+    try {
+      const response = await this.#pointsApiService.updatePoint(updateElement);
+      const updatedPoint = this.#adaptToClient(response);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        updatedPoint,
+        ...this.#points.slice(index + 1)
+      ];
+    } catch(err) {
+      throw new Error('Can\'t update point');
+    }
 
     this._notify(updateType, updateElement);
   }
 
-  addPoint(updateType, updateElement) {
-    this.#points.unshift(updateElement);
+  async addPoint(updateType, updateElement) {
+    try{
+      const response = await this.#pointsApiService.addPoint(updateElement);
+      const newPoint = this.#adaptToClient(response);
+      this.#points.unshift(newPoint);
+      this._notify(updateType, updateElement);
+    } catch(err) {
+      throw new Error('Can\'t add task');
+    }
+  }
 
-    this._notify(updateType, updateElement);
+  async deletePoint(updateType, updateElement){
+    const index = this.#points.findIndex(
+      (point) => point.id === updateElement.id
+    );
+
+    if (index === -1) {
+      throw new Error ('Can\'t update unexisting point');
+    }
+
+    try {
+      await this.#pointsApiService.deletePoint(updateElement);
+      this.#points.splice(index, 1);
+      this._notify(updateType);
+    } catch (err) {
+      throw new Error('Can\'t delete point');
+    }
   }
 
   #adaptToClient(point) {
@@ -81,19 +110,5 @@ export default class PointsModel extends Observable {
     delete adaptedPoint['is_favorite'];
 
     return adaptedPoint;
-  }
-
-  deletePoint(updateType, updateElement){
-    const index = this.#points.findIndex(
-      (task) => task.id === updateElement.id
-    );
-
-    if (index === -1) {
-      throw new Error ('Can\'t update unexisting point');
-    }
-
-    this.#points.splice(index, 1);
-
-    this._notify(updateType);
   }
 }
