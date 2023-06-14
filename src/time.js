@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const MINUTES_IN_HOUR = 3600000;
 const MINUTES_IN_DAY = MINUTES_IN_HOUR * 24;
@@ -19,10 +22,13 @@ const setTimeFormat = (timeDiff) => {
   return timeFormat;
 };
 
-const getTimeDiff = (startTime, endTime) => {
-  const timeDuration = dayjs(endTime).diff(startTime);
-  const timeFormat = setTimeFormat(timeDuration);
-  return dayjs(timeDuration).format(timeFormat);
+const getTimeDiff = (startTime, endTime, isNeedFormat = true) => {
+  const timeDuration = dayjs(endTime).diff(dayjs(startTime));
+  if(isNeedFormat){
+    const timeFormat = setTimeFormat(timeDuration);
+    return dayjs.utc(timeDuration).format(timeFormat);
+  }
+  return timeDuration;
 };
 
 export { setTimeFormat, getTimeDiff };

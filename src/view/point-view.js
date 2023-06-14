@@ -1,23 +1,24 @@
 import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
 import { getTimeDiff } from '../time.js';
+import {getById, toUpperCaseFirstLetter} from '../utils.js';
 
-const createOffersListTemplate = (point) =>
-  point.offers
-    .map(
-      (offer) => `
-    <li class="event__offer">
+const createOffersListTemplate = (point, availableOffers) => point.offers.map((offer) => {
+  offer = getById(offer, availableOffers);
+  return `<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </li>
-  `
-    )
-    .join('');
+  `;
+}).join('');
 
-function createPointTemplate(point) {
-  const { eventType, cityName, eventTypeLabel, isFavorite, dateFrom, dateTo, basePrice } = point;
-  const offersPointTemplate = createOffersListTemplate(point);
+
+function createPointTemplate(point, offers, destinations) {
+  const { eventType, destinationId, isFavorite, dateFrom, dateTo, basePrice } = point;
+  const destination = getById(destinationId, destinations);
+  const availableOffers = offers.find((currentOffers) => currentOffers.type === point.eventType).offers;
+  const offersPointTemplate = createOffersListTemplate(point, availableOffers);
 
   const timeDiff = getTimeDiff(dateFrom, dateTo);
 
@@ -27,7 +28,7 @@ function createPointTemplate(point) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${eventTypeLabel} ${cityName}</h3>
+    <h3 class="event__title">${toUpperCaseFirstLetter(eventType)} ${destination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${dayjs(dateFrom).toISOString()}">${dayjs(dateFrom).format('HH:mm')}</time>
@@ -58,11 +59,16 @@ function createPointTemplate(point) {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #offers = [];
+  #destinations = [];
   #handleEditClick = null;
   #handleFavoriteClick = null;
-  constructor({ point, onEditClick, onFavoriteClick }) {
+
+  constructor({ point, onEditClick, onFavoriteClick, offers, destinations }) {
     super();
     this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
 
@@ -74,7 +80,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   #editClickHandler = (evt) => {

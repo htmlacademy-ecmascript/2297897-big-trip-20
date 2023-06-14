@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
+import {getTimeDiff} from './time.js';
 
-const getDestinationInfo = (destinationId, destinations) => destinations.find(
-  (currentDestination) => currentDestination.id === destinationId
+const getById = (searchedId, list) => list.find(
+  (currentElement) => currentElement.id === searchedId
 );
 
 const toUpperCaseFirstLetter = (word) => `${word.slice(0,1).toUpperCase()}${word.slice(1)}`;
@@ -11,8 +12,8 @@ const sortDay = (firstPoint, secondPoint) => {
   const secondPointDate = dayjs(secondPoint.dateFrom);
   return firstPointDate.valueOf() - secondPointDate.valueOf();
 };
-const sortTime = (pointA, pointB) => pointB.timeDiff - pointA.timeDiff;
-const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
+const sortTime = (pointA, pointB) => getTimeDiff(pointB.dateFrom, pointB.dateTo, false) - getTimeDiff(pointA.dateFrom, pointA.dateTo, false);
+const sortPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
 
@@ -20,4 +21,4 @@ const isPointPast = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && 
 const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 const isPointFuture = ({dateFrom, dateTo}) => dayjs().isBefore(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 
-export { sortDay, sortTime, sortPrice, getDestinationInfo, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter, getValueFromString };
+export { sortDay, sortTime, sortPrice, getById, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter, getValueFromString };

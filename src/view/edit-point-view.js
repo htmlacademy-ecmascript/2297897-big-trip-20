@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {getDestinationInfo, toUpperCaseFirstLetter, getValueFromString} from '../utils.js';
+import {getById, toUpperCaseFirstLetter, getValueFromString} from '../utils.js';
 import flatpickr from 'flatpickr';
 import {TYPES} from '../const.js';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -8,7 +8,6 @@ import 'flatpickr/dist/themes/material_blue.css';
 
 const BLANK_POINT = {
   eventType: 'flight',
-  eventTypeLabel: 'Flight',
   dateFrom: '',
   dateTo: '',
   cityName: '',
@@ -90,9 +89,9 @@ const createDestinationListTemplate = (destinations) => destinations.map((destin
 function createEditPointTemplate(point, offers, destinations) {
   const { eventType, dateFrom, dateTo, destinationId, basePrice, availableOffers } = point;
   const offersTemplate = availableOffers.length !== 0 ? createOffersTemplate(point) : '';
-  const destinationInfo = getDestinationInfo(destinationId, destinations);
+  const destinationInfo = getById(destinationId, destinations);
   const destinationsListTemplate = createDestinationListTemplate(destinations);
-  const destinationTemplate = destinationId !== '' ? createDestinationInfoTemplate(destinationInfo) : '';
+  const destinationTemplate = destinationId !== undefined ? createDestinationInfoTemplate(destinationInfo) : '';
   const eventTypesTemplate = createEventTypesTemplate(eventType);
   const isNewPoint = !point.id;
   const templateButtons = isNewPoint
@@ -121,7 +120,7 @@ function createEditPointTemplate(point, offers, destinations) {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${toUpperCaseFirstLetter(eventType)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationInfo.name}" list="destination-list-1" autocomplete="off" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationId !== undefined ? destinationInfo.name : '' }" list="destination-list-1" autocomplete="off" required>
         <datalist id="destination-list-1">
           ${destinationsListTemplate}
         </datalist>
@@ -310,7 +309,7 @@ export default class EditPointView extends AbstractStatefulView {
     }
 
     this.updateElement({
-      destinationId: currentCityInfo.id
+      destinationId: currentCityInfo.id,
     });
   };
 
@@ -337,7 +336,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
-    if (!evt.target.classList.contains('event__offer-checkbox') /* !== 'event__offer-checkbox'*/) {
+    if (!evt.target.classList.contains('event__offer-checkbox')) {
       return;
     }
 
@@ -346,7 +345,7 @@ export default class EditPointView extends AbstractStatefulView {
     const offers = this._state.offers;
     if (isChecked) {
       offers.push(
-        this.#offers.find((offer) => offer.id === pickedOffer.id)
+        pickedOffer.id
       );
     } else {
       const element = offers.find((offerId) => offerId === pickedOffer.id);

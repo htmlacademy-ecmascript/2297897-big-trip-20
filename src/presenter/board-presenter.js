@@ -33,7 +33,9 @@ export default class BoardPresenter {
     this.#newPointPresenter = new NewPointPresenter({
       pointListContainer: this.#listComponent.element,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy
+      onDestroy: onNewPointDestroy,
+      destinations: this.#pointsModel.destinations,
+      offers: this.#pointsModel.offers
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -63,7 +65,7 @@ export default class BoardPresenter {
   createPoint(){
     this.#currentSortType = SortType.DAY;
     this.#filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init();
+    this.#newPointPresenter.init(this.#pointsModel.offers, this.#pointsModel.destinations);
   }
 
   #handleModeChange = () => {
