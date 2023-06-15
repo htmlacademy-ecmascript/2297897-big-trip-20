@@ -1,31 +1,19 @@
 import dayjs from 'dayjs';
+import {getTimeDiff} from './time.js';
 
-const getCityInfo = (desiredCity, citiesList) => citiesList.find(
-  (currentInfo) => currentInfo.cityName === desiredCity
+const getById = (searchedId, list) => list.find(
+  (currentElement) => currentElement.id === searchedId
 );
 
-const getRandomArrayElement = (array) => {
-  const randomElement = array[Math.floor(Math.random() * (array.length))];
-  return randomElement;
-};
-
-const generateNumber = (min, max) => {
-  const upper = Math.max(Math.abs(min), Math.abs(max));
-  const lower = Math.min(Math.abs(min), Math.abs(max));
-  const number = Math.floor(lower + Math.random() * (upper - lower + 1));
-  return number;
-};
-
 const toUpperCaseFirstLetter = (word) => `${word.slice(0,1).toUpperCase()}${word.slice(1)}`;
-
+const getValueFromString = (string) => string.toLowerCase().replaceAll(' ', '-');
 const sortDay = (firstPoint, secondPoint) => {
   const firstPointDate = dayjs(firstPoint.dateFrom);
   const secondPointDate = dayjs(secondPoint.dateFrom);
-  const result = firstPointDate.valueOf() - secondPointDate.valueOf();
-  return result;
+  return firstPointDate.valueOf() - secondPointDate.valueOf();
 };
-const sortTime = (pointA, pointB) => pointB.timeDiff - pointA.timeDiff;
-const sortPrice = (pointA, pointB) => pointB.finalPrice - pointA.finalPrice;
+const sortTime = (pointA, pointB) => getTimeDiff(pointB.dateFrom, pointB.dateTo, false) - getTimeDiff(pointA.dateFrom, pointA.dateTo, false);
+const sortPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
 
@@ -33,4 +21,4 @@ const isPointPast = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && 
 const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 const isPointFuture = ({dateFrom, dateTo}) => dayjs().isBefore(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 
-export { getRandomArrayElement, generateNumber, sortDay, sortTime, sortPrice, getCityInfo, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter };
+export { sortDay, sortTime, sortPrice, getById, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter, getValueFromString };

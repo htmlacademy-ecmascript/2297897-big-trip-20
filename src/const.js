@@ -20,7 +20,8 @@ const UserAction = {
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 const FilterType = {
@@ -30,16 +31,5 @@ const FilterType = {
   PAST: 'past'
 };
 
-const TYPES = [
-  'taxi',
-  'bus',
-  'train',
-  'ship',
-  'drive',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'restaurant'
-];
 
-export { Mode, SortType, UserAction, UpdateType, FilterType, TYPES };
+export { Mode, SortType, UserAction, UpdateType, FilterType };
