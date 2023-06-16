@@ -8,17 +8,17 @@ const Method = {
 };
 
 export default class PointsApiService extends ApiService {
-  get points (){
+  getPoints (){
     return this._load({url: 'points'})
       .then(ApiService.parseResponse);
   }
 
-  get offers (){
+  getOffers (){
     return this._load({url:'offers'})
       .then(ApiService.parseResponse);
   }
 
-  get destinations (){
+  getDestinations (){
     return this._load({url:'destinations'})
       .then(ApiService.parseResponse);
   }
@@ -35,12 +35,10 @@ export default class PointsApiService extends ApiService {
   }
 
   async deletePoint(point){
-    const response = await this._load({
+    return await this._load({
       url: `points/${point.id}`,
       method: Method.DELETE,
     });
-
-    return response;
   }
 
   async updatePoint(point) {
@@ -66,7 +64,6 @@ export default class PointsApiService extends ApiService {
     };
 
     delete adaptedPoint.eventType;
-    delete adaptedPoint.cityName;
     delete adaptedPoint.availableOffers;
     delete adaptedPoint.destinationId;
     delete adaptedPoint.basePrice;

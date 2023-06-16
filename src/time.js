@@ -3,32 +3,26 @@ import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(utc);
 
-const MINUTES_IN_HOUR = 3600000;
-const MINUTES_IN_DAY = MINUTES_IN_HOUR * 24;
-
-const setTimeFormat = (timeDiff) => {
-  let timeFormat = null;
-  switch (true) {
-    case timeDiff < MINUTES_IN_HOUR:
-      timeFormat = 'mm[M]';
-      break;
-    case timeDiff >= MINUTES_IN_HOUR && timeDiff < MINUTES_IN_DAY:
-      timeFormat = 'HH[H] mm[M]';
-      break;
-    case timeDiff >= MINUTES_IN_DAY:
-      timeFormat = 'DD[D] HH[H] mm[M]';
-      break;
-  }
-  return timeFormat;
-};
+const MILLISECONDS_IN_HOUR = 3600000;
+const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * 24;
 
 const getTimeDiff = (startTime, endTime, isNeedFormat = true) => {
-  const timeDuration = dayjs(endTime).diff(dayjs(startTime));
+  let timeDuration = dayjs(endTime).diff(dayjs(startTime));
   if(isNeedFormat){
-    const timeFormat = setTimeFormat(timeDuration);
-    return dayjs.utc(timeDuration).format(timeFormat);
+    switch (true) {
+      case timeDuration < MILLISECONDS_IN_HOUR:
+        timeDuration = dayjs.utc(timeDuration).format('mm[M]');
+        break;
+      case timeDuration >= MILLISECONDS_IN_HOUR && timeDuration < MILLISECONDS_IN_DAY:
+        timeDuration = dayjs.utc(timeDuration).format('HH[H] mm[M]');
+        break;
+      case timeDuration >= MILLISECONDS_IN_DAY:
+        timeDuration = dayjs.utc(timeDuration).subtract(1, 'day').format('DD[D] HH[H] mm[M]');
+        break;
+    }
+    return timeDuration;
   }
   return timeDuration;
 };
 
-export { setTimeFormat, getTimeDiff };
+export { getTimeDiff };
