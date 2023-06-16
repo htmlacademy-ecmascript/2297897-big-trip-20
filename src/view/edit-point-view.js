@@ -21,7 +21,6 @@ const BLANK_POINT = {
   eventType: 'flight',
   dateFrom: '',
   dateTo: '',
-  cityName: '',
   basePrice: 0,
   offers: []
 };
@@ -387,7 +386,6 @@ export default class EditPointView extends AbstractStatefulView {
     delete point.isDisabled;
     delete point.isSaving;
     delete point.isDeleting;
-    delete point.cityName;
     delete point.availableOffers;
 
     return point;
