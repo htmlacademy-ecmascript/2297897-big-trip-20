@@ -25,4 +25,4 @@ const getTimeDiff = (startTime, endTime, isNeedFormat = true) => {
   return timeDuration;
 };
 
-export { getTimeDiff };
+export {getTimeDiff };
