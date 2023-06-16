@@ -25,10 +25,10 @@ export default class PointsModel extends Observable {
   }
 
   async init() {
-    this.#offers = await this.#pointsApiService.offers;
-    this.#destinations = await this.#pointsApiService.destinations;
+    this.#offers = await this.#pointsApiService.getOffers();
+    this.#destinations = await this.#pointsApiService.getDestinations();
     try {
-      const points = await this.#pointsApiService.points;
+      const points = await this.#pointsApiService.getPoints();
       this.#points = points.map(this.#adaptToClient);
     } catch (err){
       this.#points = [];
@@ -45,17 +45,14 @@ export default class PointsModel extends Observable {
       throw new Error ('Can\'t update unexisting point');
     }
 
-    try {
-      const response = await this.#pointsApiService.updatePoint(updateElement);
-      const updatedPoint = this.#adaptToClient(response);
-      this.#points = [
-        ...this.#points.slice(0, index),
-        updatedPoint,
-        ...this.#points.slice(index + 1)
-      ];
-    } catch(err) {
-      throw new Error('Can\'t update point');
-    }
+    const response = await this.#pointsApiService.updatePoint(updateElement);
+    const updatedPoint = this.#adaptToClient(response);
+    this.#points = [
+      ...this.#points.slice(0, index),
+      updatedPoint,
+      ...this.#points.slice(index + 1)
+    ];
+
 
     this._notify(updateType, updateElement);
   }
@@ -96,7 +93,7 @@ export default class PointsModel extends Observable {
       eventType: point['type'],
       destinationId: point['destination'],
       basePrice: point['base_price'],
-      dateFrom: new Date(point['date_from']),
+      dateFrom: new Date(point['date_from']), //Тут замена
       dateTo: new Date(point['date_to']),
       isFavorite: point['is_favorite'],
       offers: point['offers'],
