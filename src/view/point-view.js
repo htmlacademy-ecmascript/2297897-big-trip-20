@@ -14,7 +14,7 @@ const createOffersListTemplate = (point, availableOffers) => point.offers.map((o
 }).join('');
 
 
-function createPointTemplate(point, offers, destinations) {
+const createPointTemplate = (point, offers, destinations) => {
   const { eventType, destinationId, isFavorite, dateFrom, dateTo, basePrice } = point;
   const destination = getById(destinationId, destinations);
   const availableOffers = offers.find((currentOffers) => currentOffers.type === point.eventType).offers;
@@ -55,7 +55,7 @@ function createPointTemplate(point, offers, destinations) {
     </button>
   </div>
 </li>`;
-}
+};
 
 export default class PointView extends AbstractView {
   #point = null;

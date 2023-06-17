@@ -18,6 +18,14 @@ const pointsModel = new PointsModel({
 });
 const filtersModel = new FilterModel();
 
+const newPointButtonComponent = new NewPointButtonView({
+  onClick: handleNewPointButtonClick
+});
+
+const handleNewPointFormClose = () => {
+  newPointButtonComponent.element.disabled = false;
+};
+
 const boardPresenter = new BoardPresenter({
   bodyContainer: tripEventsContainer,
   pointsModel,
@@ -31,15 +39,8 @@ const filtersPresenter = new FiltersPresenter({
   pointsModel,
 });
 
-const newPointButtonComponent = new NewPointButtonView({
-  onClick: handleNewPointButtonClick
-});
-
-function handleNewPointFormClose(){
-  newPointButtonComponent.element.disabled = false;
-}
-
-function handleNewPointButtonClick(){
+function handleNewPointButtonClick() {
+  /* for hoisting */
   boardPresenter.createPoint();
   newPointButtonComponent.element.disabled = true;
 }

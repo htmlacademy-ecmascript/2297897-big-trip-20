@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {getById, getByType} from '../utils.js';
 import dayjs from 'dayjs';
 
-function createTripInfoTitle(points, destinations) {
+const createTripInfoTitle = (points, destinations) => {
 
   const startPoint = getById(points[0].destinationId, destinations);
   const endPoint = getById(points[points.length - 1].destinationId, destinations);
@@ -19,17 +19,17 @@ function createTripInfoTitle(points, destinations) {
     case points.length > 3:
       return `<h1 class="trip-info__title">${startPoint.name} &mdash; ... &mdash; ${endPoint.name}</h1>`;
   }
-}
+};
 
-function createTripInfoDates(points){
+const createTripInfoDates = (points) => {
   const isSameMonth = points[0].dateFrom.getMonth() === points[points.length - 1].dateTo.getMonth();
   const isSameYear = points[0].dateFrom.getFullYear() === points[points.length - 1].dateTo.getFullYear();
   const startDate = dayjs(points[0].dateFrom).format('MMM D');
   const endDate = dayjs(points[points.length - 1].dateTo).format(isSameMonth && isSameYear ? 'DD' : 'MMM D');
   return `<p class="trip-info__dates">${startDate}&nbsp;&mdash;&nbsp;${endDate}</p>`;
-}
+};
 
-function calculateTripCost(points, offers) {
+const calculateTripCost = (points, offers) => {
   points.forEach(
     (point) => {
       let offersPrice = 0;
@@ -43,9 +43,9 @@ function calculateTripCost(points, offers) {
   const tripCost = points.reduce((sum, point) => sum + (point.basePrice + (point.offersPrice ?? 0)), 0);
   points.forEach((point) => delete point.offersPrice);
   return tripCost;
-}
+};
 
-function createPointInfoTemplate(points, destinations, offers) {
+const createPointInfoTemplate = (points, destinations, offers) => {
   const tripInfoTitle = createTripInfoTitle(points, destinations);
   const tripInfoDates = createTripInfoDates(points, destinations);
   const tripCost = calculateTripCost(points, offers);
@@ -59,7 +59,7 @@ function createPointInfoTemplate(points, destinations, offers) {
       Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripCost}</span>
     </p>
   </section>`;
-}
+};
 
 export default class PointInfoView extends AbstractView {
   #points = null;

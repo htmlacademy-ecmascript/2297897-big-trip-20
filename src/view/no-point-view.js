@@ -8,10 +8,10 @@ const NoPointsTextType = {
   [FilterType.FUTURE]: 'There are no future events now',
 };
 
-function createNoPointsTemplate (filterType) {
+const createNoPointsTemplate = (filterType) => {
   const noPointsTextValue = NoPointsTextType[filterType];
   return`<p class="trip-events__msg">${noPointsTextValue}</p>`;
-}
+};
 
 export default class NoPointsView extends AbstractView{
   #currentFilterType = null;

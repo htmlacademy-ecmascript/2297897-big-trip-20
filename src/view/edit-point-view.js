@@ -96,7 +96,7 @@ const createEventTypesTemplate = (currentType) =>
 const createDestinationListTemplate = (destinations) => destinations.map((destination) =>
   `<option value="${destination.name}"></option>`).join('');
 
-function createEditPointTemplate(point, offers, destinations) {
+const createEditPointTemplate = (point, offers, destinations) => {
   const {eventType,
     dateFrom,
     dateTo,
@@ -187,7 +187,7 @@ function createEditPointTemplate(point, offers, destinations) {
     ${destinationTemplate};
   </form>
 </li>`;
-}
+};
 
 export default class EditPointView extends AbstractStatefulView {
   #offers = [];
@@ -221,7 +221,7 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditPointTemplate(this._state, this.#offers, this.#destinations);
   }
 
-  removeElement() {
+  removeElement = () => {
     super.removeElement();
 
     if (this.#datepickerFrom) {
@@ -232,13 +232,13 @@ export default class EditPointView extends AbstractStatefulView {
       this.#datepickerTo.destroy();
       this.#datepickerTo = null;
     }
-  }
+  };
 
-  reset(point) {
+  reset = (point) => {
     this.updateElement(
       EditPointView.parsePointToState(point)
     );
-  }
+  };
 
   _restoreHandlers() {
     this.element.querySelector('form')
@@ -264,7 +264,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#setDatepickerTo();
   }
 
-  #setDatepickerFrom() {
+  #setDatepickerFrom = () => {
     this.#datepickerFrom = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
@@ -276,9 +276,9 @@ export default class EditPointView extends AbstractStatefulView {
         onClose: this.#dateFromChangeHandler,
       }
     );
-  }
+  };
 
-  #setDatepickerTo() {
+  #setDatepickerTo = () => {
     this.#datepickerTo = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
@@ -290,7 +290,7 @@ export default class EditPointView extends AbstractStatefulView {
         onClose: this.#dateToChangeHandler,
       }
     );
-  }
+  };
 
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({

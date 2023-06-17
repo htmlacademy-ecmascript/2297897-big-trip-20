@@ -71,15 +71,15 @@ export default class BoardPresenter {
     return filteredPoints;
   }
 
-  init() {
+  init = () =>{
     this.#renderBoard();
-  }
+  };
 
-  createPoint(){
+  createPoint = () => {
     this.#currentSortType = SortType.DAY;
     this.#filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init(this.#pointsModel.offers, this.#pointsModel.destinations);
-  }
+  };
 
   #handleModeChange = () => {
     this.#newPointPresenter.destroy();
@@ -96,15 +96,15 @@ export default class BoardPresenter {
     this.#renderBoard();
   };
 
-  #renderSort() {
+  #renderSort = () => {
     this.#sortComponent = new SortView({
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
     render(this.#sortComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
-  }
+  };
 
-  #renderInfo() {
+  #renderInfo = () => {
     if(this.#infoComponent){
       remove(this.#infoComponent);
     }
@@ -116,7 +116,7 @@ export default class BoardPresenter {
     this.#infoComponent = new PointInfoView(points, offers, destinations);
     render(this.#infoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
 
-  }
+  };
 
   #handleViewAction = async (actionType, updateType, updateElement) => {
     this.#uiBlocker.block();
@@ -172,7 +172,7 @@ export default class BoardPresenter {
     }
   };
 
-  #renderPoint(point) {
+  #renderPoint = (point) => {
     const pointComponentPresenter = new PointPresenter({
       pointsListContainer: this.#listComponent.element,
       onDataChange: this.#handleViewAction,
@@ -182,21 +182,21 @@ export default class BoardPresenter {
       destinations: this.#pointsModel.destinations
     });
     this.#pointPresenters.set(point.id, pointComponentPresenter);
-  }
+  };
 
-  #renderNoPoints() {
+  #renderNoPoints = () => {
     this.#noPointsComponent = new NoPointsView ({
       filterType: this.#filterType
     });
 
     render(this.#noPointsComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
-  }
+  };
 
-  #renderLoading() {
+  #renderLoading = () => {
     render(this.#loadingComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
-  }
+  };
 
-  #clearBoard({resetSortType = false } = {}) {
+  #clearBoard = ({resetSortType = false } = {}) => {
 
     this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
@@ -212,9 +212,9 @@ export default class BoardPresenter {
     if(resetSortType){
       this.#currentSortType = SortType.DAY;
     }
-  }
+  };
 
-  #renderBoard() {
+  #renderBoard = () => {
     render(this.#listComponent, this.#bodyContainer);
 
     if(this.#isLoading) {
@@ -233,5 +233,5 @@ export default class BoardPresenter {
     this.#renderInfo();
     this.#renderSort();
     this.points.forEach((point) => this.#renderPoint(point));
-  }
+  };
 }
