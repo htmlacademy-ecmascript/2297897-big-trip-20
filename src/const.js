@@ -32,4 +32,4 @@ const FilterType = {
 };
 
 
-export { Mode, SortType, UserAction, UpdateType, FilterType };
+export {Mode, SortType, UserAction, UpdateType, FilterType};

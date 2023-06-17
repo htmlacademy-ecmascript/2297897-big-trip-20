@@ -1,8 +1,8 @@
 import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view.js';
-import { replace, render, remove } from '../framework/render.js';
-import { UserAction, UpdateType, Mode } from '../const.js';
-import { isDatesEqual } from '../utils.js';
+import {replace, render, remove} from '../framework/render.js';
+import {UserAction, UpdateType, Mode} from '../const.js';
+import {isDatesEqual} from '../utils.js';
 
 export default class PointPresenter {
   #handleDataChange = null;
@@ -18,7 +18,7 @@ export default class PointPresenter {
 
   #mode = Mode.DEFAULT;
 
-  constructor({ pointsListContainer, onDataChange, onModeChange, point, offers, destinations }) {
+  constructor({pointsListContainer, onDataChange, onModeChange, point, offers, destinations}) {
     this.#pointsListContainer = pointsListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
@@ -71,7 +71,7 @@ export default class PointPresenter {
     remove(prevPointEditComponent);
   };
 
-  destroy = ()=> {
+  destroy = () => {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
   };
@@ -141,7 +141,7 @@ export default class PointPresenter {
   };
 
   setDeleting = () => {
-    if (this.#mode === Mode.EDITING){
+    if (this.#mode === Mode.EDITING) {
       this.#pointEditComponent.updateElement({
         isDisabled: true,
         isDeleting: true

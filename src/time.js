@@ -8,7 +8,7 @@ const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * 24;
 
 const getTimeDiff = (startTime, endTime, isNeedFormat = true) => {
   let timeDuration = dayjs(endTime).diff(dayjs(startTime));
-  if(isNeedFormat){
+  if (isNeedFormat) {
     switch (true) {
       case timeDuration < MILLISECONDS_IN_HOUR:
         timeDuration = dayjs.duration(timeDuration).format('mm[M]');

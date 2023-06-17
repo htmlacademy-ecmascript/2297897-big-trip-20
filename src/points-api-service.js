@@ -13,11 +13,11 @@ export default class PointsApiService extends ApiService {
       .then(ApiService.parseResponse);
 
   getOffers = () =>
-    this._load({url:'offers'})
+    this._load({url: 'offers'})
       .then(ApiService.parseResponse);
 
   getDestinations = () =>
-    this._load({url:'destinations'})
+    this._load({url: 'destinations'})
       .then(ApiService.parseResponse);
 
   addPoint = async (point) => {

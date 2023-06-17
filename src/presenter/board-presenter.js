@@ -1,12 +1,12 @@
 import ListView from '../view/list-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
-import { RenderPosition, render, remove } from '../framework/render.js';
-import { sortDay, sortTime, sortPrice } from '../utils.js';
+import {RenderPosition, render, remove} from '../framework/render.js';
+import {sortDay, sortTime, sortPrice} from '../utils.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
-import { filter } from '../filter.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
+import {filter} from '../filter.js';
 import NoPointsView from '../view/no-point-view.js';
 import LoadingView from '../view/loading-view.js';
 import PointInfoView from '../view/point-info-view.js';
@@ -38,7 +38,7 @@ export default class BoardPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({ bodyContainer, pointsModel, filtersModel, onNewPointDestroy}) {
+  constructor({bodyContainer, pointsModel, filtersModel, onNewPointDestroy}) {
     this.#bodyContainer = bodyContainer;
     this.#pointsModel = pointsModel;
     this.#filtersModel = filtersModel;
@@ -71,7 +71,7 @@ export default class BoardPresenter {
     return filteredPoints;
   }
 
-  init = () =>{
+  init = () => {
     this.#renderBoard();
   };
 
@@ -105,7 +105,7 @@ export default class BoardPresenter {
   };
 
   #renderInfo = () => {
-    if(this.#infoComponent){
+    if (this.#infoComponent) {
       remove(this.#infoComponent);
     }
 
@@ -124,9 +124,9 @@ export default class BoardPresenter {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(updateElement.id).setSaving();
-        try{
+        try {
           await this.#pointsModel.updatePoint(updateType, updateElement);
-        } catch(err){
+        } catch (err) {
           this.#pointPresenters.get(updateElement.id).setAborting();
         }
         break;
@@ -134,7 +134,7 @@ export default class BoardPresenter {
         this.#newPointPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, updateElement);
-        } catch(err){
+        } catch (err) {
           this.#newPointPresenter.setAborting();
         }
         break;
@@ -142,7 +142,7 @@ export default class BoardPresenter {
         this.#pointPresenters.get(updateElement.id).setDeleting();
         try {
           await this.#pointsModel.deletePoint(updateType, updateElement);
-        } catch(err){
+        } catch (err) {
           this.#pointPresenters.get(updateElement.id).setAborting();
         }
         break;
@@ -185,7 +185,7 @@ export default class BoardPresenter {
   };
 
   #renderNoPoints = () => {
-    this.#noPointsComponent = new NoPointsView ({
+    this.#noPointsComponent = new NoPointsView({
       filterType: this.#filterType
     });
 
@@ -196,7 +196,7 @@ export default class BoardPresenter {
     render(this.#loadingComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
   };
 
-  #clearBoard = ({resetSortType = false } = {}) => {
+  #clearBoard = ({resetSortType = false} = {}) => {
 
     this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
@@ -205,11 +205,11 @@ export default class BoardPresenter {
     remove(this.#sortComponent);
     remove(this.#loadingComponent);
 
-    if(this.#noPointsComponent){
+    if (this.#noPointsComponent) {
       remove(this.#noPointsComponent);
     }
 
-    if(resetSortType){
+    if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }
   };
@@ -217,7 +217,7 @@ export default class BoardPresenter {
   #renderBoard = () => {
     render(this.#listComponent, this.#bodyContainer);
 
-    if(this.#isLoading) {
+    if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
@@ -225,7 +225,7 @@ export default class BoardPresenter {
     const points = this.points;
     const pointsCount = points.length;
 
-    if (pointsCount === 0){
+    if (pointsCount === 0) {
       this.#renderNoPoints();
       return;
     }

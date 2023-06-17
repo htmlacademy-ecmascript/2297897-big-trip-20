@@ -1,7 +1,7 @@
-import { UpdateType, UserAction } from '../const.js';
-import { RenderPosition } from '../framework/render.js';
+import {UpdateType, UserAction} from '../const.js';
+import {RenderPosition} from '../framework/render.js';
 import EditPointView from '../view/edit-point-view.js';
-import { render, remove } from '../framework/render.js';
+import {render, remove} from '../framework/render.js';
 
 
 export default class NewPointPresenter {
@@ -35,7 +35,7 @@ export default class NewPointPresenter {
   };
 
   destroy = () => {
-    if (this.#pointEditComponent === null){
+    if (this.#pointEditComponent === null) {
       return;
     }
 
@@ -47,7 +47,7 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  setSaving = () =>{
+  setSaving = () => {
     this.#pointEditComponent.updateElement({
       isDisabled: true,
       isSaving: true
