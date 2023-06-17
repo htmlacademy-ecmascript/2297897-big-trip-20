@@ -5,6 +5,11 @@ const getById = (searchedId, list) => list.find(
   (currentElement) => currentElement.id === searchedId
 );
 
+const getByType = (searchedType, offersList) => {
+  const offersArray = offersList.find((currentOffers) => currentOffers.type === searchedType.eventType);
+  return offersArray.offers;
+};
+
 const toUpperCaseFirstLetter = (word) => `${word.slice(0,1).toUpperCase()}${word.slice(1)}`;
 const getValueFromString = (string) => string.toLowerCase().replaceAll(' ', '-');
 const sortDay = (firstPoint, secondPoint) => {
@@ -21,4 +26,4 @@ const isPointPast = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && 
 const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 const isPointFuture = ({dateFrom, dateTo}) => dayjs().isBefore(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo));
 
-export { sortDay, sortTime, sortPrice, getById, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter, getValueFromString };
+export { sortDay, sortTime, sortPrice, getById, getByType, isDatesEqual, isPointPast, isPointPresent, isPointFuture, toUpperCaseFirstLetter, getValueFromString };

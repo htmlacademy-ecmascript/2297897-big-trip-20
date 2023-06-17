@@ -1,9 +1,8 @@
 import BoardPresenter from './presenter/board-presenter.js';
-import PointInfoView from './view/point-info-view.js';
 import PointsModel from './model/points-model.js';
 import FilterModel from './model/filters-model.js';
 import PointsApiService from './points-api-service.js';
-import { render, RenderPosition } from './framework/render.js';
+import {render} from './framework/render.js';
 import FiltersPresenter from './presenter/filters-presenter.js';
 import NewPointButtonView from './view/new-point-button-view.js';
 
@@ -46,8 +45,9 @@ function handleNewPointButtonClick(){
 }
 
 render(newPointButtonComponent, tripMainElement);
-render(new PointInfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 filtersPresenter.init();
 boardPresenter.init();
 pointsModel.init();
+
+export {tripMainElement};

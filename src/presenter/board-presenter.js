@@ -9,6 +9,8 @@ import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { filter } from '../filter.js';
 import NoPointsView from '../view/no-point-view.js';
 import LoadingView from '../view/loading-view.js';
+import PointInfoView from '../view/point-info-view.js';
+import {tripMainElement} from '../main.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -20,6 +22,7 @@ export default class BoardPresenter {
   #listComponent = new ListView();
   #noPointsComponent = null;
   #loadingComponent = new LoadingView();
+  #infoComponent = null;
   #bodyContainer = null;
 
   #pointsModel = null;
@@ -101,6 +104,20 @@ export default class BoardPresenter {
     render(this.#sortComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
   }
 
+  #renderInfo() {
+    if(this.#infoComponent){
+      remove(this.#infoComponent);
+    }
+
+    const points = this.points.sort(sortDay);
+    const offers = this.#pointsModel.offers;
+    const destinations = this.#pointsModel.destinations;
+
+    this.#infoComponent = new PointInfoView(points, offers, destinations);
+    render(this.#infoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
+
+  }
+
   #handleViewAction = async (actionType, updateType, updateElement) => {
     this.#uiBlocker.block();
 
@@ -137,6 +154,7 @@ export default class BoardPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id).init(data);
+        this.#renderInfo();
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
@@ -212,6 +230,7 @@ export default class BoardPresenter {
       return;
     }
 
+    this.#renderInfo();
     this.#renderSort();
     this.points.forEach((point) => this.#renderPoint(point));
   }
