@@ -10,12 +10,15 @@ import {filter} from '../filter.js';
 import NoPointsView from '../view/no-point-view.js';
 import LoadingView from '../view/loading-view.js';
 import PointInfoView from '../view/point-info-view.js';
-import {tripMainElement} from '../main.js';
+import ErrorView from '../view/error-view.js';
+import NewPointButtonView from '../view/new-point-button-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000
 };
+
+const tripMainElement = document.querySelector('.trip-main');
 
 export default class BoardPresenter {
   #sortComponent = null;
@@ -24,6 +27,7 @@ export default class BoardPresenter {
   #loadingComponent = new LoadingView();
   #infoComponent = null;
   #bodyContainer = null;
+  #newPointButtonComponent = null;
 
   #pointsModel = null;
   #filtersModel = null;
@@ -38,7 +42,7 @@ export default class BoardPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({bodyContainer, pointsModel, filtersModel, onNewPointDestroy}) {
+  constructor({bodyContainer, pointsModel, filtersModel}) {
     this.#bodyContainer = bodyContainer;
     this.#pointsModel = pointsModel;
     this.#filtersModel = filtersModel;
@@ -46,7 +50,7 @@ export default class BoardPresenter {
     this.#newPointPresenter = new NewPointPresenter({
       pointListContainer: this.#listComponent.element,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy,
+      onDestroy: this.#handleNewPointFormClose,
       destinations: this.#pointsModel.destinations,
       offers: this.#pointsModel.offers
     });
@@ -96,6 +100,13 @@ export default class BoardPresenter {
     this.#renderBoard();
   };
 
+  #renderNewPointButton = () => {
+    this.#newPointButtonComponent = new NewPointButtonView({
+      onClick: this.#handleNewPointButtonClick
+    });
+    render(this.#newPointButtonComponent, tripMainElement);
+  };
+
   #renderSort = () => {
     this.#sortComponent = new SortView({
       currentSortType: this.#currentSortType,
@@ -116,6 +127,15 @@ export default class BoardPresenter {
     this.#infoComponent = new PointInfoView(points, offers, destinations);
     render(this.#infoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
 
+  };
+
+  #handleNewPointButtonClick = () => {
+    this.createPoint();
+    this.#newPointButtonComponent.element.disabled = true;
+  };
+
+  #handleNewPointFormClose = () => {
+    this.#newPointButtonComponent.element.disabled = false;
   };
 
   #handleViewAction = async (actionType, updateType, updateElement) => {
@@ -168,7 +188,12 @@ export default class BoardPresenter {
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderBoard();
+        this.#renderNewPointButton();
         break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderError('Can\'t reach server. Please try again...');
     }
   };
 
@@ -194,6 +219,13 @@ export default class BoardPresenter {
 
   #renderLoading = () => {
     render(this.#loadingComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
+  };
+
+  #renderError = (errorMessage) => {
+    const errorComponent = new ErrorView({
+      message: errorMessage
+    });
+    render(errorComponent, this.#bodyContainer, RenderPosition.AFTERBEGIN);
   };
 
   #clearBoard = ({resetSortType = false} = {}) => {
