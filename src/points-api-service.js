@@ -8,22 +8,19 @@ const Method = {
 };
 
 export default class PointsApiService extends ApiService {
-  getPoints (){
-    return this._load({url: 'points'})
+  getPoints = () =>
+    this._load({url: 'points'})
       .then(ApiService.parseResponse);
-  }
 
-  getOffers (){
-    return this._load({url:'offers'})
+  getOffers = () =>
+    this._load({url: 'offers'})
       .then(ApiService.parseResponse);
-  }
 
-  getDestinations (){
-    return this._load({url:'destinations'})
+  getDestinations = () =>
+    this._load({url: 'destinations'})
       .then(ApiService.parseResponse);
-  }
 
-  async addPoint(point){
+  addPoint = async (point) => {
     const response = await this._load({
       url: 'points',
       method: Method.POST,
@@ -32,16 +29,15 @@ export default class PointsApiService extends ApiService {
     });
 
     return await ApiService.parseResponse(response);
-  }
+  };
 
-  async deletePoint(point){
-    return await this._load({
+  deletePoint = async (point) =>
+    await this._load({
       url: `points/${point.id}`,
       method: Method.DELETE,
     });
-  }
 
-  async updatePoint(point) {
+  updatePoint = async (point) => {
     const response = await this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
@@ -50,9 +46,9 @@ export default class PointsApiService extends ApiService {
     });
 
     return await ApiService.parseResponse(response);
-  }
+  };
 
-  #adaptToServer(point) {
+  #adaptToServer = (point) => {
     const adaptedPoint = {
       ...point,
       'type': point.eventType,
@@ -71,5 +67,5 @@ export default class PointsApiService extends ApiService {
     delete adaptedPoint.isFavorite;
 
     return adaptedPoint;
-  }
+  };
 }

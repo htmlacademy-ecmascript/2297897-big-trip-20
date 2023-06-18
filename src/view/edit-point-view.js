@@ -96,7 +96,7 @@ const createEventTypesTemplate = (currentType) =>
 const createDestinationListTemplate = (destinations) => destinations.map((destination) =>
   `<option value="${destination.name}"></option>`).join('');
 
-function createEditPointTemplate(point, offers, destinations) {
+const createEditPointTemplate = (point, offers, destinations) => {
   const {eventType,
     dateFrom,
     dateTo,
@@ -147,10 +147,24 @@ function createEditPointTemplate(point, offers, destinations) {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom ? dayjs(dateFrom).format('DD/MM/YY HH:mm') : ''}"  ${isDisabled ? 'disabled' : ''} required>
+        <input class="event__input  event__input--time"
+               id="event-start-time-1"
+               type="text"
+               name="event-start-time"
+               value="${dateFrom ? dayjs(dateFrom).format('DD/MM/YY HH:mm') : ''}"
+               ${isDisabled ? 'disabled' : ''}
+               autocomplete="off"
+               required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo ? dayjs(dateTo).format('DD/MM/YY HH:mm') : ''}"  ${isDisabled ? 'disabled' : ''} required>
+        <input class="event__input  event__input--time"
+               id="event-end-time-1"
+               type="text"
+               name="event-end-time"
+               value="${dateTo ? dayjs(dateTo).format('DD/MM/YY HH:mm') : ''}"
+               ${isDisabled ? 'disabled' : ''}
+               autocomplete="off"
+               required>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -173,7 +187,7 @@ function createEditPointTemplate(point, offers, destinations) {
     ${destinationTemplate};
   </form>
 </li>`;
-}
+};
 
 export default class EditPointView extends AbstractStatefulView {
   #offers = [];
@@ -207,7 +221,7 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditPointTemplate(this._state, this.#offers, this.#destinations);
   }
 
-  removeElement() {
+  removeElement = () => {
     super.removeElement();
 
     if (this.#datepickerFrom) {
@@ -218,13 +232,13 @@ export default class EditPointView extends AbstractStatefulView {
       this.#datepickerTo.destroy();
       this.#datepickerTo = null;
     }
-  }
+  };
 
-  reset(point) {
+  reset = (point) => {
     this.updateElement(
       EditPointView.parsePointToState(point)
     );
-  }
+  };
 
   _restoreHandlers() {
     this.element.querySelector('form')
@@ -250,7 +264,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#setDatepickerTo();
   }
 
-  #setDatepickerFrom() {
+  #setDatepickerFrom = () => {
     this.#datepickerFrom = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
@@ -259,13 +273,12 @@ export default class EditPointView extends AbstractStatefulView {
         dateFormat: 'd/m/y H:i',
         maxDate: this._state.dateTo,
         defaultDate: this._state.dateFrom,
-        onChange: this.#dateFromChangeHandler,
-        allowInput: true
+        onClose: this.#dateFromChangeHandler,
       }
     );
-  }
+  };
 
-  #setDatepickerTo() {
+  #setDatepickerTo = () => {
     this.#datepickerTo = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
@@ -274,11 +287,10 @@ export default class EditPointView extends AbstractStatefulView {
         dateFormat: 'd/m/y H:i',
         minDate: this._state.dateFrom,
         defaultDate: this._state.dateTo,
-        onChange: this.#dateToChangeHandler,
-        allowInput: true
+        onClose: this.#dateToChangeHandler,
       }
     );
-  }
+  };
 
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({

@@ -1,8 +1,8 @@
 import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view.js';
-import { replace, render, remove } from '../framework/render.js';
-import { UserAction, UpdateType, Mode } from '../const.js';
-import { isDatesEqual } from '../utils.js';
+import {replace, render, remove} from '../framework/render.js';
+import {UserAction, UpdateType, Mode} from '../const.js';
+import {isDatesEqual} from '../utils.js';
 
 export default class PointPresenter {
   #handleDataChange = null;
@@ -18,7 +18,7 @@ export default class PointPresenter {
 
   #mode = Mode.DEFAULT;
 
-  constructor({ pointsListContainer, onDataChange, onModeChange, point, offers, destinations }) {
+  constructor({pointsListContainer, onDataChange, onModeChange, point, offers, destinations}) {
     this.#pointsListContainer = pointsListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
@@ -28,7 +28,7 @@ export default class PointPresenter {
     this.init(this.#point);
   }
 
-  init(point) {
+  init = (point) => {
     this.#point = point;
 
     const prevPointComponent = this.#pointComponent;
@@ -69,19 +69,19 @@ export default class PointPresenter {
 
     remove(prevPointComponent);
     remove(prevPointEditComponent);
-  }
+  };
 
-  destroy() {
+  destroy = () => {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
-  }
+  };
 
-  resetView() {
+  resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
       this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
-  }
+  };
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
@@ -131,25 +131,25 @@ export default class PointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  setSaving() {
+  setSaving = () => {
     if (this.#mode === Mode.EDITING) {
       this.#pointEditComponent.updateElement({
         isDisabled: true,
         isSaving: true
       });
     }
-  }
+  };
 
-  setDeleting() {
-    if (this.#mode === Mode.EDITING){
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
       this.#pointEditComponent.updateElement({
         isDisabled: true,
         isDeleting: true
       });
     }
-  }
+  };
 
-  setAborting() {
+  setAborting = () => {
     if (this.#mode === Mode.DEFAULT) {
       this.#pointComponent.shake();
       return;
@@ -164,20 +164,20 @@ export default class PointPresenter {
     };
 
     this.#pointEditComponent.shake(resetFormState);
-  }
+  };
 
-  #replacePointToForm() {
+  #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
     document.addEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 
-  #replaceFormToPoint() {
+  #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
     this.#mode = Mode.DEFAULT;
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 }
 
 
