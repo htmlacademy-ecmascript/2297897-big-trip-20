@@ -6,8 +6,8 @@ const getById = (searchedId, list) => list.find(
 );
 
 const getByType = (searchedType, offersList) => {
-  const offersArray = offersList.find((currentOffers) => currentOffers.type === searchedType.eventType);
-  return offersArray.offers;
+  const initializedOffers = offersList.find((currentOffers) => currentOffers.type === searchedType.eventType);
+  return initializedOffers.offers;
 };
 
 const toUpperCaseFirstLetter = (word) => `${word.slice(0, 1).toUpperCase()}${word.slice(1)}`;
