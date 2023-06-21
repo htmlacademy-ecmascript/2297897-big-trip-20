@@ -83,6 +83,9 @@ export default class BoardPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init(this.#pointsModel.offers, this.#pointsModel.destinations);
+    if (this.points.length === 0) {
+      remove(this.#noPointsComponent);
+    }
   };
 
   #handleModeChange = () => {
